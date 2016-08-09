@@ -3,6 +3,7 @@
 #include "externals.h"
 #include "maccfg.h"
 
+
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #include <locale.h>
@@ -36,8 +37,10 @@ __private_extern char* PLUGLOC(char* toloc);
 
 #ifdef USEOPENAL
 #define APP_ID @"net.sf.peops.SPUALPlugin"
+#import "PeopsSpuAL-Swift.h"
 #else
 #define APP_ID @"net.sf.peops.SPUSDLPlugin"
+#import "PeopsSpuSDL-Swift.h"
 #endif
 #define PrefsKey APP_ID @" Settings"
 
@@ -92,7 +95,7 @@ long DoConfiguration()
 		NSWindow *window;
 		
 		if (pluginController == nil) {
-			pluginController = [[PluginController alloc] initWithWindowNibName:@"NetSfPeopsSpuPluginMain"];
+			pluginController = [[SPUPluginController alloc] initWithWindowNibName:@"NetSfPeopsSpuPluginMain"];
 		}
 		window = [pluginController window];
 		
@@ -110,115 +113,30 @@ void ReadConfig(void)
 {
 	NSDictionary *keyValues;
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults registerDefaults:
-	 @{PrefsKey: @{@"High Compatibility Mode": @YES,
-				   @"SPU IRQ Wait": @YES,
-				   @"XA Pitch": @NO,
-				   @"Mono Sound Output": @NO,
-				   @"Interpolation Quality": @0,
-				   @"Reverb Quality": @1,
-				   @"Volume": @3}}];
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		[defaults registerDefaults:
+		 @{PrefsKey: @{kHighCompMode: @YES,
+					   kSPUIRQWait: @YES,
+					   kXAPitch: @NO,
+					   kMonoSoundOut: @NO,
+					   kInterpolQual: @0,
+					   kReverbQual: @1,
+					   kVolume: @3}}];
+	});
 	
 	keyValues = [defaults dictionaryForKey:PrefsKey];
 	
-	iUseTimer = [keyValues[@"High Compatibility Mode"] boolValue] ? 2 : 0;
-	iSPUIRQWait = [keyValues[@"SPU IRQ Wait"] boolValue];
-	iDisStereo = [keyValues[@"Mono Sound Output"] boolValue];
-	iXAPitch = [keyValues[@"XA Pitch"] boolValue];
+	iUseTimer = [keyValues[kHighCompMode] boolValue] ? 2 : 0;
+	iSPUIRQWait = [keyValues[kSPUIRQWait] boolValue];
+	iDisStereo = [keyValues[kMonoSoundOut] boolValue];
+	iXAPitch = [keyValues[kXAPitch] boolValue];
 	
-	iUseInterpolation = [keyValues[@"Interpolation Quality"] intValue];
-	iUseReverb = [keyValues[@"Reverb Quality"] intValue];
+	iUseInterpolation = [keyValues[kInterpolQual] intValue];
+	iUseReverb = [keyValues[kReverbQual] intValue];
 	
-	iVolume = 5 - [keyValues[@"Volume"] intValue];
+	iVolume = 5 - [keyValues[kVolume] intValue];
 }
-
-@implementation PluginController
-
-- (IBAction)cancel:(id)sender
-{
-	[self close];
-}
-
-- (IBAction)ok:(id)sender
-{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-	NSMutableDictionary *writeDic = [NSMutableDictionary dictionaryWithDictionary:self.keyValues];
-	writeDic[@"High Compatibility Mode"] = ([self.hiCompBox intValue] ? @YES : @NO);
-	writeDic[@"SPU IRQ Wait"] = ([self.irqWaitBox intValue] ? @YES : @NO);
-	writeDic[@"Mono Sound Output"] = ([self.monoSoundBox intValue] ? @YES : @NO);
-	writeDic[@"XA Pitch"] = ([self.xaSpeedBox intValue] ? @YES : @NO);
-
-	writeDic[@"Interpolation Quality"] = @([self.interpolValue intValue]);
-	writeDic[@"Reverb Quality"] = @([self.reverbValue intValue]);
-
-	writeDic[@"Volume"] = @([self.volumeValue intValue]);
-
-	// write to defaults
-	[defaults setObject:writeDic forKey:PrefsKey];
-	[defaults synchronize];
-
-	// and set global values accordingly
-	ReadConfig();
-
-	[self close];
-}
-
-- (IBAction)reset:(id)sender
-{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults removeObjectForKey:PrefsKey];
-	[self loadValues];
-}
-
-- (void)loadValues
-{
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-	ReadConfig();
-
-	/* load from preferences */
-	self.keyValues = [NSMutableDictionary dictionaryWithDictionary:[defaults dictionaryForKey:PrefsKey]];
-
-	[self.hiCompBox setIntValue:[self.keyValues[@"High Compatibility Mode"] boolValue]];
-	[self.irqWaitBox setIntValue:[self.keyValues[@"SPU IRQ Wait"] boolValue]];
-	[self.monoSoundBox setIntValue:[self.keyValues[@"Mono Sound Output"] boolValue]];
-	[self.xaSpeedBox setIntValue:[self.keyValues[@"XA Pitch"] boolValue]];
-
-	[self.interpolValue setIntValue:[self.keyValues[@"Interpolation Quality"] intValue]];
-	[self.reverbValue setIntValue:[self.keyValues[@"Reverb Quality"] intValue]];
-	[self.volumeValue setIntValue:[self.keyValues[@"Volume"] intValue]];
-}
-
-- (void)awakeFromNib
-{
-	Class thisClass = [self class];
-	
-	NSBundle *spuBundle = [NSBundle bundleForClass:thisClass];
-	
-	[self.interpolValue setStrings:@[
-		[spuBundle localizedStringForKey:@"(No Interpolation)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Simple Interpolation)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Gaussian Interpolation)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Cubic Interpolation)" value:@"" table:nil]]];
-	self.interpolValue.pluginClass = thisClass;
-
-	[self.reverbValue setStrings:@[
-		[spuBundle localizedStringForKey:@"(No Reverb)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Simple Reverb)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(PSX Reverb)" value:@"" table:nil]]];
-	self.reverbValue.pluginClass = thisClass;
-
-	[self.volumeValue setStrings:@[
-		[spuBundle localizedStringForKey:@"(Muted)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Low)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Medium)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Loud)" value:@"" table:nil],
-		[spuBundle localizedStringForKey:@"(Loudest)" value:@"" table:nil]]];
-	self.volumeValue.pluginClass = thisClass;
-}
-
-@end
 
 #import "OSXPlugLocalization.h"
-PLUGLOCIMP([PluginController class]);
+PLUGLOCIMP([SPUPluginController class]);

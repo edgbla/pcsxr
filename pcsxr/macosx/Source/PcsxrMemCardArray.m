@@ -9,6 +9,7 @@
 #import "PcsxrMemCardArray.h"
 #import "ConfigurationController.h"
 #include "sio.h"
+#import "PCSXR-Swift.h"
 
 #define MAX_MEMCARD_BLOCKS 15
 #define ISLINKMIDBLOCK(Info) (((Info)->Flags & 0xF) == 0x2)
@@ -222,7 +223,7 @@ static inline void ClearMemcardData(char *to, int dsti, char *str)
 	}
 	PcsxrMemoryObject *tmpObj = rawArray[idx];
 
-	int memSize = tmpObj.blockSize;
+	int memSize = (int)tmpObj.blockSize;
 	
 	if ([otherCard availableBlocks] < memSize) {
 		NSLog(@"Failing because the other card does not have enough space!");
@@ -299,7 +300,7 @@ static inline void ClearMemcardData(char *to, int dsti, char *str)
 		return [self freeBlocks];
 	}
 
-	return [rawArray[idx] blockSize];
+	return (int)[rawArray[idx] blockSize];
 }
 
 - (void)compactMemory
@@ -323,7 +324,7 @@ static inline void ClearMemcardData(char *to, int dsti, char *str)
 				break;
 			}
 			
-			CopyMemcardData(self.memDataPtr, self.memDataPtr, x, i, (char*)[[self.memCardURL path] fileSystemRepresentation]);
+			CopyMemcardData(self.memDataPtr, self.memDataPtr, x, i, (char*)[self.memCardURL fileSystemRepresentation]);
 			ClearMemcardData(self.memDataPtr, x, (char*)self.memCardCPath);
 		}
 		i++;

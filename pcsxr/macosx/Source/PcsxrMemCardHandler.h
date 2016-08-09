@@ -10,6 +10,6 @@
 #import "PcsxrFileHandle.h"
 
 @interface PcsxrMemCardHandler : NSWindowController <PcsxrFileHandle>
-@property (weak) IBOutlet NSTextField *cardPath;
-- (IBAction)setMemCard:(id)sender;
+@property (weak, null_unspecified) IBOutlet NSTextField *cardPath;
+- (IBAction)setMemCard:(nullable id)sender;
 @end

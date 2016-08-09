@@ -1,14 +1,11 @@
 #import <Cocoa/Cocoa.h>
 #import "PcsxrController.h"
 #import "ConfigurationController.h"
-#import "CheatController.h"
 #import "EmuThread.h"
 #import "PcsxrMemCardHandler.h"
 #import "PcsxrPluginHandler.h"
 #import "PcsxrDiscHandler.h"
-#import "PcsxrFreezeStateHandler.h"
 #import "PcsxrCheatHandler.h"
-#import "LaunchArg.h"
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include "psxcommon.h"
@@ -16,6 +13,7 @@
 #include "misc.h"
 #include "cdrom.h"
 #include "ExtendedKeys.h"
+#import "PCSXR-Swift.h"
 
 NSDictionary *prefStringKeys = nil;
 NSDictionary *prefByteKeys = nil;
@@ -173,7 +171,7 @@ static void PSXDiscAppearedCallback(DADiskRef disk, void *context)
 		
 		if ([openDlg runModal] == NSFileHandlingPanelOKButton) {
 			NSArray* files = [openDlg URLs];
-			SetIsoFile([[files[0] path] fileSystemRepresentation]);
+			SetIsoFile([files[0] fileSystemRepresentation]);
 			SetCdOpenCaseTime(time(NULL) + 2);
 			LidInterrupt();
 		}
@@ -204,10 +202,9 @@ static void PSXDiscAppearedCallback(DADiskRef disk, void *context)
 			[ejectTask waitUntilExit];
 		}
 		DASessionRef tmpSession = DASessionCreate(kCFAllocatorDefault);
-		CFDictionaryRef match = CFBridgingRetain(@{(NSString*)kDADiskDescriptionMediaKindKey : @(kIOCDMediaClass),
-												 (NSString*)kDADiskDescriptionMediaWholeKey : @YES});
-		DARegisterDiskAppearedCallback(tmpSession, match, PSXDiscAppearedCallback, (__bridge void*)self);
-		CFRelease(match);
+		NSDictionary *match = @{(NSString*)kDADiskDescriptionMediaKindKey : @(kIOCDMediaClass),
+								(NSString*)kDADiskDescriptionMediaWholeKey : @YES};
+		DARegisterDiskAppearedCallback(tmpSession, (__bridge CFDictionaryRef)(match), PSXDiscAppearedCallback, (__bridge void*)self);
 		
 		DASessionScheduleWithRunLoop(tmpSession, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 		
@@ -303,7 +300,7 @@ static void PSXDiscAppearedCallback(DADiskRef disk, void *context)
 {
 	if ([EmuThread active] == YES) {
 		if (UsingIso()) {
-			SetIsoFile([[url path] fileSystemRepresentation]);
+			SetIsoFile([url fileSystemRepresentation]);
 			SetCdOpenCaseTime(time(NULL) + 2);
 			LidInterrupt();
 		} else {
@@ -315,7 +312,7 @@ static void PSXDiscAppearedCallback(DADiskRef disk, void *context)
 		} else {
 			[pluginList disableNetPlug];
 		}
-		SetIsoFile([[url path] fileSystemRepresentation]);
+		SetIsoFile([url fileSystemRepresentation]);
 		[EmuThread run];
 	}
 }
@@ -477,7 +474,7 @@ otherblock();\
 {
 	[[NSNotificationCenter defaultCenter]
 	 addObserver:self selector:@selector(emuWindowDidClose:)
-	 name:@"emuWindowDidClose" object:nil];
+	 name:kEmuWindowDidClose object:nil];
 	
 	pluginList = [[PluginList alloc] init];
 	if (![pluginList configured] /*!Config.Gpu[0] || !Config.Spu[0] || !Config.Pad1[0] || !Config.Cdr[0]*/) {
@@ -522,7 +519,7 @@ otherblock();\
 		
 		dispatch_block_t cdromBlock = ^{
 			hasParsedAnArgument = YES;
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgRun argument:kPCSXRArgumentCDROM block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderRun argument:kPCSXRArgumentCDROM block:^{
 				[self runCD:nil];
 			}];
 			[larg addToDictionary:argDict];
@@ -530,7 +527,7 @@ otherblock();\
 		
 		dispatch_block_t biosBlock = ^{
 			hasParsedAnArgument = YES;
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgRun argument:kPCSXRArgumentBIOS block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderRun argument:kPCSXRArgumentBIOS block:^{
 				[self runBios:nil];
 			}];
 			[larg addToDictionary:argDict];
@@ -539,7 +536,7 @@ otherblock();\
 		// This block/argument does not need to be sorted
 		dispatch_block_t emuCloseAtEnd = ^{
 			hasParsedAnArgument = YES;
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgPreRun argument:kPCSXRArgumentExitAtClose block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderPreRun argument:kPCSXRArgumentExitAtClose block:^{
 				self.endAtEmuClose = YES;
 			}];
 			[larg addToDictionary:argDict];
@@ -547,7 +544,7 @@ otherblock();\
 		
 		dispatch_block_t psxOut = ^{
 			hasParsedAnArgument = YES;
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgPreRun argument:kPCSXRArgumentLogOutput block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderPreRun argument:kPCSXRArgumentLogOutput block:^{
 				Config.PsxOut = true;
 			}];
 			[larg addToDictionary:argDict];
@@ -555,7 +552,7 @@ otherblock();\
 		
 		dispatch_block_t slowBoot = ^{
 			hasParsedAnArgument = YES;
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgPreRun argument:kPCSXRArgumentSlowBoot block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderPreRun argument:kPCSXRArgumentSlowBoot block:^{
 				Config.SlowBoot = true;
 			}];
 			[larg addToDictionary:argDict];
@@ -564,7 +561,7 @@ otherblock();\
 		dispatch_block_t isoBlock = ^{
 			hasParsedAnArgument = YES;
 			NSString *path = FileTestBlock();
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgRun argument:kPCSXRArgumentISO block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderRun argument:kPCSXRArgumentISO block:^{
 				[self runURL:[NSURL fileURLWithPath:path isDirectory:NO]];
 			}];
 			[larg addToDictionary:argDict];
@@ -580,7 +577,7 @@ otherblock();\
 			
 			NSString *path = FileTestBlock();
 			NSString *mcdArg = [kPCSXRArgumentMcd stringByAppendingFormat:@"%i", mcdnumber];
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgPreRun argument:mcdArg block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderPreRun argument:mcdArg block:^{
 				LoadMcd(mcdnumber, (char*)[path fileSystemRepresentation]);
 			}];
 			[larg addToDictionary:argDict];
@@ -589,7 +586,7 @@ otherblock();\
 		dispatch_block_t freezeBlock = ^{
 			hasParsedAnArgument = YES;
 			NSString *path = FileTestBlock();
-			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgPostRun argument:kPCSXRArgumentFreeze block:^{
+			LaunchArg *larg = [[LaunchArg alloc] initWithLaunchOrder:LaunchArgOrderPostRun argument:kPCSXRArgumentFreeze block:^{
 				if (![EmuThread isRunBios]) {
 					dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_global_queue(0, 0), ^{
 						[EmuThread defrostAt:path];
@@ -735,23 +732,23 @@ otherblock();\
 			[defaults setBool:YES forKey:@"DidMoveMemoryObjects"];
 		}
 		
-		str = [[[defaults URLForKey:@"Mcd1"] path] fileSystemRepresentation];
+		str = [[defaults URLForKey:@"Mcd1"] fileSystemRepresentation];
 		if (str) {
 			strlcpy(Config.Mcd1, str, MAXPATHLEN);
 		} else {
 			NSURL *url = [memoryURL URLByAppendingPathComponent:@"Mcd001.mcr"];
 			[defaults setURL:url forKey:@"Mcd1"];
-			str = [[url path] fileSystemRepresentation];
+			str = [url fileSystemRepresentation];
 			if (str != nil) strlcpy(Config.Mcd1, str, MAXPATHLEN);
 		}
 		
-		str = [[[defaults URLForKey:@"Mcd2"] path] fileSystemRepresentation];
+		str = [[defaults URLForKey:@"Mcd2"] fileSystemRepresentation];
 		if (str) {
 			strlcpy(Config.Mcd2, str, MAXPATHLEN);
 		} else {
 			NSURL *url = [memoryURL URLByAppendingPathComponent:@"Mcd002.mcr"];
 			[defaults setURL:url forKey:@"Mcd2"];
-			str = [[url path] fileSystemRepresentation];
+			str = [url  fileSystemRepresentation];
 			if (str != nil) strlcpy(Config.Mcd2, str, MAXPATHLEN);
 		}
 	}
@@ -884,22 +881,22 @@ otherblock();\
 			[manager createDirectoryAtPath:saveStatePath withIntermediateDirectories:YES attributes:nil error:NULL];
 
         url = [MemCardPath URLByAppendingPathComponent:@"Mcd001.mcr"];
-		str = [[url path] fileSystemRepresentation];
+		str = [url fileSystemRepresentation];
 		if (str != nil)
 			strlcpy(Config.Mcd1, str, MAXPATHLEN);
 
 		url = [MemCardPath URLByAppendingPathComponent:@"Mcd002.mcr"];
-		str = [[url path] fileSystemRepresentation];
+		str = [url fileSystemRepresentation];
 		if (str != nil)
 			strlcpy(Config.Mcd2, str, MAXPATHLEN);
 
 		url = [PcsxrAppSupport URLByAppendingPathComponent:@"Bios"];
-		str = [[url path] fileSystemRepresentation];
+		str = [url fileSystemRepresentation];
 		if (str != nil)
 			strlcpy(Config.BiosDir, str, MAXPATHLEN);
 
 		url = [PcsxrAppSupport URLByAppendingPathComponent:@"Patches"];
-		str = [[url path] fileSystemRepresentation];
+		str = [url fileSystemRepresentation];
 		if (str != nil) {
 			strlcpy(Config.PatchesDir, str, MAXPATHLEN);
 		}

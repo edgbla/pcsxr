@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #include <setjmp.h>
 
+#define kEmuWindowDidClose @"emuWindowDidClose"
+
 typedef NS_ENUM(char, EmuThreadPauseStatus) {
 	PauseStateIsNotPaused = 0,
 	PauseStatePauseRequested,

@@ -130,7 +130,7 @@ enum seeked_state {
 	SEEK_DONE = 1,
 };
 
-static struct CdrStat stat;
+static struct CdrStat cdstat;
 
 extern unsigned int msf2sec(const char *msf);
 extern void sec2msf(unsigned int s, const char *msf);
@@ -296,10 +296,10 @@ void cdrLidSeekInterrupt()
 	case DRIVESTATE_STANDBY:
 		cdr.StatP &= ~STATUS_SEEK;
 
-		if (CDR_getStatus(&stat) == -1)
+		if (CDR_getStatus(&cdstat) == -1)
 			return;
 
-		if (stat.Status & STATUS_SHELLOPEN)
+		if (cdstat.Status & STATUS_SHELLOPEN)
 		{
 			StopCdda();
 			cdr.DriveState = DRIVESTATE_LID_OPEN;
@@ -308,8 +308,8 @@ void cdrLidSeekInterrupt()
 		break;
 
 	case DRIVESTATE_LID_OPEN:
-		if (CDR_getStatus(&stat) == -1)
-			stat.Status &= ~STATUS_SHELLOPEN;
+		if (CDR_getStatus(&cdstat) == -1)
+			cdstat.Status &= ~STATUS_SHELLOPEN;
 
 		// 02, 12, 10
 		if (!(cdr.StatP & STATUS_SHELLOPEN)) {
@@ -326,7 +326,7 @@ void cdrLidSeekInterrupt()
 		else if (cdr.StatP & STATUS_ROTATING) {
 			cdr.StatP &= ~STATUS_ROTATING;
 		}
-		else if (!(stat.Status & STATUS_SHELLOPEN)) {
+		else if (!(cdstat.Status & STATUS_SHELLOPEN)) {
 			// closed now
 			CheckCdrom();
 
@@ -945,11 +945,11 @@ void cdrInterrupt() {
 			cdr.Result[3] = 0;
 
 			// 0x10 - audio | 0x40 - disk missing | 0x80 - unlicensed
-			if (CDR_getStatus(&stat) == -1 || stat.Type == 0 || stat.Type == 0xff) {
+			if (CDR_getStatus(&cdstat) == -1 || cdstat.Type == 0 || cdstat.Type == 0xff) {
 				cdr.Result[1] = 0xc0;
 			}
 			else {
-				if (stat.Type == 2)
+				if (cdstat.Type == 2)
 					cdr.Result[1] |= 0x10;
 				if (CdromId[0] == '\0')
 					cdr.Result[1] |= 0x80;

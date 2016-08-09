@@ -1,55 +1,58 @@
 /* ConfigurationController */
 
 #import <Cocoa/Cocoa.h>
-#import "PluginController.h"
 #import "HotkeyController.h"
-#import "PluginList.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const memChangeNotifier;
 extern NSString *const memCardChangeNumberKey;
 
 @class PcsxrMemCardController;
+@class PluginController;
 
 @interface ConfigurationController : NSWindowController <NSWindowDelegate, NSTabViewDelegate>
-@property (weak) IBOutlet PluginController *cdromPlugin;
-@property (weak) IBOutlet PluginController *graphicsPlugin;
-@property (weak) IBOutlet PluginController *padPlugin;
-@property (weak) IBOutlet PluginController *soundPlugin;
-@property (weak) IBOutlet PluginController *netPlugin;
-@property (weak) IBOutlet PluginController *sio1Plugin;
+@property (weak, null_unspecified) IBOutlet PluginController *cdromPlugin;
+@property (weak, null_unspecified) IBOutlet PluginController *graphicsPlugin;
+@property (weak, null_unspecified) IBOutlet PluginController *padPlugin;
+@property (weak, null_unspecified) IBOutlet PluginController *soundPlugin;
+@property (weak, null_unspecified) IBOutlet PluginController *netPlugin;
+@property (weak, null_unspecified) IBOutlet PluginController *sio1Plugin;
 
-@property (weak) IBOutlet PcsxrMemCardController *memCardEdit;
+@property (weak, null_unspecified) IBOutlet PcsxrMemCardController *memCardEdit;
 
 // Hotkeys
-@property (weak) IBOutlet HotkeyController *hkController;
-@property (weak) IBOutlet NSTabViewItem *hkTab;
+@property (weak, null_unspecified) IBOutlet HotkeyController *hkController;
+@property (weak, null_unspecified) IBOutlet NSTabViewItem *hkTab;
 
-@property (weak) IBOutlet NSButtonCell *noXaAudioCell;
-@property (weak) IBOutlet NSButtonCell *sioIrqAlwaysCell;
-@property (weak) IBOutlet NSButtonCell *bwMdecCell;
-@property (weak) IBOutlet NSButtonCell *autoVTypeCell;
-@property (weak) IBOutlet NSPopUpButton *vTypePALCell;
-@property (weak) IBOutlet NSButtonCell *noCDAudioCell;
-@property (weak) IBOutlet NSButtonCell *usesHleCell;
-@property (weak) IBOutlet NSButtonCell *usesDynarecCell;
-@property (weak) IBOutlet NSButtonCell *consoleOutputCell;
-@property (weak) IBOutlet NSButtonCell *spuIrqAlwaysCell;
-@property (weak) IBOutlet NSButtonCell *rCountFixCell;
-@property (weak) IBOutlet NSButtonCell *vSyncWAFixCell;
-@property (weak) IBOutlet NSButtonCell *noFastBootCell;
-@property (weak) IBOutlet NSButtonCell *enableNetPlayCell;
-@property (weak) IBOutlet NSButtonCell *widescreen;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *noXaAudioCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *sioIrqAlwaysCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *bwMdecCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *autoVTypeCell;
+@property (weak, null_unspecified) IBOutlet NSPopUpButton *vTypePALCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *noCDAudioCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *usesHleCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *usesDynarecCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *consoleOutputCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *spuIrqAlwaysCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *rCountFixCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *vSyncWAFixCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *noFastBootCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *enableNetPlayCell;
+@property (weak, null_unspecified) IBOutlet NSButtonCell *widescreen;
 
-- (IBAction)setCheckbox:(id)sender;
-- (IBAction)setCheckboxInverse:(id)sender;
-- (IBAction)setVideoType:(id)sender;
+- (IBAction)setCheckbox:(nullable id)sender;
+- (IBAction)setCheckboxInverse:(nullable id)sender;
+- (IBAction)setVideoType:(nullable id)sender;
 
 + (void)setMemoryCard:(NSInteger)theCard toPath:(NSString *)theFile;
 + (void)setMemoryCard:(NSInteger)theCard toURL:(NSURL *)theURL;
 
-- (IBAction)mcdNewClicked:(id)sender;
-- (IBAction)mcdChangeClicked:(id)sender;
+- (IBAction)mcdNewClicked:(nullable id)sender;
+- (IBAction)mcdChangeClicked:(nullable id)sender;
 
-- (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem;
+//- (void)tabView:(nonnull NSTabView *)tabView didSelectTabViewItem:(nullable NSTabViewItem *)tabViewItem;
 
 @end
+
+NS_ASSUME_NONNULL_END

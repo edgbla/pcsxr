@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6249" systemVersion="14A386b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6249"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -90,7 +90,7 @@
                             </menuItem>
                             <menuItem title="Run Recent..." id="329">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Run Recent..." id="330" customClass="RecentItemsMenu">
+                                <menu key="submenu" title="Run Recent..." id="330" customClass="RecentItemsMenu" customModule="PCSXR" customModuleProvider="target">
                                     <items>
                                         <menuItem isSeparatorItem="YES" tag="1" id="367"/>
                                         <menuItem title="Clear recent list" tag="1" id="366">

@@ -1,11 +1,11 @@
 #import "ConfigurationController.h"
 #import "PcsxrController.h"
-#import "PluginList.h"
 #import "PcsxrPlugin.h"
 #import "PcsxrMemCardController.h"
 #import "PcsxrMemCardHandler.h"
 #include "psxcommon.h"
 #include "plugins.h"
+#import "PCSXR-Swift.h"
 
 NSString *const memChangeNotifier = @"PcsxrMemoryCardDidChangeNotifier";
 NSString *const memCardChangeNumberKey = @"PcsxrMemoryCardThatChangedKey";
@@ -46,10 +46,10 @@ NSString *const memCardChangeNumberKey = @"PcsxrMemoryCardThatChangedKey";
 {
 	if (theCard == 1) {
 		[[NSUserDefaults standardUserDefaults] setURL:theURL forKey:@"Mcd1"];
-		strlcpy(Config.Mcd1, [[theURL path] fileSystemRepresentation], MAXPATHLEN );
+		strlcpy(Config.Mcd1, [theURL fileSystemRepresentation], MAXPATHLEN );
 	} else {
 		[[NSUserDefaults standardUserDefaults] setURL:theURL forKey:@"Mcd2"];
-		strlcpy(Config.Mcd2, [[theURL path] fileSystemRepresentation], MAXPATHLEN );
+		strlcpy(Config.Mcd2, [theURL fileSystemRepresentation], MAXPATHLEN );
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:memChangeNotifier object:nil userInfo:
@@ -136,13 +136,7 @@ NSString *const memCardChangeNumberKey = @"PcsxrMemoryCardThatChangedKey";
 	[openDlg beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
 		if (result == NSFileHandlingPanelOKButton) {
 			NSURL *mcdURL = [openDlg URL];
-			const char *fileSysRep;
-			
-			if ([mcdURL respondsToSelector:@selector(fileSystemRepresentation)]) {
-				fileSysRep = [mcdURL fileSystemRepresentation];
-			} else {
-				fileSysRep = [[mcdURL path] fileSystemRepresentation];
-			}
+			const char *fileSysRep = [mcdURL fileSystemRepresentation];
 			
 			//Workaround/kludge to make sure we create a memory card before posting a notification
 			strlcpy(mcd, fileSysRep, MAXPATHLEN);
@@ -251,7 +245,7 @@ NSString *const memCardChangeNumberKey = @"PcsxrMemoryCardThatChangedKey";
 	}
 
 	// setup plugin lists
-	PluginList *list = [PluginList list];
+	PluginList *list = [PluginList sharedList];
 
 	[list refreshPlugins];
 	[graphicsPlugin setPluginsTo:[list pluginsForType:PSE_LT_GPU] withType: PSE_LT_GPU];

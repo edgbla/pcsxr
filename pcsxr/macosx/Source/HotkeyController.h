@@ -7,19 +7,19 @@
 
 @interface HotkeyController : NSView
 
-@property (weak) IBOutlet NSTextField *FastForward;
-@property (weak) IBOutlet NSTextField *SaveState;
-@property (weak) IBOutlet NSTextField *LoadState;
-@property (weak) IBOutlet NSTextField *NextState;
-@property (weak) IBOutlet NSTextField *PrevState;
-@property (weak) IBOutlet NSTextField *FrameLimit;
+@property (weak, null_unspecified) IBOutlet NSTextField *FastForward;
+@property (weak, null_unspecified) IBOutlet NSTextField *SaveState;
+@property (weak, null_unspecified) IBOutlet NSTextField *LoadState;
+@property (weak, null_unspecified) IBOutlet NSTextField *NextState;
+@property (weak, null_unspecified) IBOutlet NSTextField *PrevState;
+@property (weak, null_unspecified) IBOutlet NSTextField *FrameLimit;
 
 
 @property NSInteger configInput;
 
 - (void) initialize;
-- (BOOL) handleMouseDown:(NSEvent *)mouseEvent;
-- (IBAction) hotkeySet:(id)sender;
+- (BOOL) handleMouseDown:(nonnull NSEvent *)mouseEvent;
+- (IBAction) hotkeySet:(nullable id)sender;
 - (void) hotkeyCancel;
 
 @end

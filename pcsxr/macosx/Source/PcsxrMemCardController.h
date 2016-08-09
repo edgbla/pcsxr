@@ -10,17 +10,17 @@
 @class PcsxrMemCardArray;
 
 @interface PcsxrMemCardController : NSViewController
-@property (weak) IBOutlet NSCollectionView *memCard1view;
-@property (weak) IBOutlet NSCollectionView *memCard2view;
-@property (weak) IBOutlet NSTextField *memCard1Label;
-@property (weak) IBOutlet NSTextField *memCard2Label;
+@property (weak, null_unspecified) IBOutlet NSCollectionView *memCard1view;
+@property (weak, null_unspecified) IBOutlet NSCollectionView *memCard2view;
+@property (weak, null_unspecified) IBOutlet NSTextField *memCard1Label;
+@property (weak, null_unspecified) IBOutlet NSTextField *memCard2Label;
 
-@property (readonly, strong) PcsxrMemCardArray *memCard1Array;
-@property (readonly, strong) PcsxrMemCardArray *memCard2Array;
+@property (readonly, strong, nonnull) PcsxrMemCardArray *memCard1Array;
+@property (readonly, strong, nonnull) PcsxrMemCardArray *memCard2Array;
 
-- (IBAction)moveBlock:(id)sender;
-- (IBAction)formatCard:(id)sender;
-- (IBAction)deleteMemoryObject:(id)sender;
+- (IBAction)moveBlock:(nullable id)sender;
+- (IBAction)formatCard:(nullable id)sender;
+- (IBAction)deleteMemoryObject:(nullable id)sender;
 - (void)loadMemoryCardInfoForCard:(int)theCard;
 
 @end

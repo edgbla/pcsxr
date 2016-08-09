@@ -184,11 +184,11 @@ SIO1registerCallback  SIO1_registerCallback;
 
 #endif
 
-static const char *err;
+static const char *psxerr;
 
 #define CheckErr(func) { \
-	err = SysLibError(); \
-	if (err != NULL) { SysMessage(_("Error loading %s: %s"), func, err); return -1; } \
+	psxerr = SysLibError(); \
+	if (psxerr != NULL) { SysMessage(_("Error loading %s: %s"), func, psxerr); return -1; } \
 }
 
 #define LoadSym(dest, src, name, checkerr) { \

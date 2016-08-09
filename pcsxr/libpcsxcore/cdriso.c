@@ -37,6 +37,10 @@
 #endif
 #include <zlib.h>
 
+#ifdef __APPLE__
+#include "fmemopen.h"
+#endif
+
 #ifdef ENABLE_CCDDA
 #include "libavcodec/avcodec.h"
 #include "libavutil/mathematics.h"

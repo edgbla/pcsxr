@@ -94,7 +94,7 @@ OSStatus GenerateThumbnailForFreeze(void *thisInterface, QLThumbnailRequestRef t
 #endif
 }
 
-static NSImage *MemoryImageAtIndex(NSArray *memArray, NSInteger my)
+static NSImage *MemoryImageAtIndex(NSArray<PcsxrMemoryObject*> *memArray, NSInteger my)
 {
 	NSInteger i = 0;
 	for (PcsxrMemoryObject *obj in memArray) {
@@ -110,7 +110,7 @@ static NSImage *MemoryImageAtIndex(NSArray *memArray, NSInteger my)
 
 OSStatus GenerateThumbnailForMemCard(void *thisInterface, QLThumbnailRequestRef thumbnail, NSURL *url, NSDictionary *options, CGSize maxSize)
 {
-	NSArray *memCards = CreateArrayByEnumeratingMemoryCardAtURL(url);
+	NSArray<PcsxrMemoryObject*> *memCards = CreateArrayByEnumeratingMemoryCardAtURL(url);
 	if (!memCards) {
 		return noErr;
 	}

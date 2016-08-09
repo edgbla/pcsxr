@@ -10,6 +10,6 @@
 #import "PcsxrFileHandle.h"
 
 @interface PcsxrPluginHandler : NSWindowController <PcsxrFileHandle>
-@property (weak) IBOutlet NSTextField *pluginName;
-- (IBAction)closeAddPluginSheet:(id)sender;
+@property (weak, null_unspecified) IBOutlet NSTextField *pluginName;
+- (IBAction)closeAddPluginSheet:(nullable id)sender;
 @end

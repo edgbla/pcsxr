@@ -7,10 +7,11 @@
 //
 
 #import "PcsxrCheatHandler.h"
-#import "CheatController.h"
+//#import "CheatController.h"
 #import "PcsxrController.h"
 #include "psxcommon.h"
 #include "cheat.h"
+#import "PCSXR-Swift.h"
 
 @implementation PcsxrCheatHandler
 

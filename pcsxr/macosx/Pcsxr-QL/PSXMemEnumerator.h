@@ -10,4 +10,4 @@
 #import "PcsxrMemoryObject.h"
 #include "MyQuickLook.h"
 
-__private_extern NSArray *CreateArrayByEnumeratingMemoryCardAtURL(NSURL *location) NS_RETURNS_RETAINED;
+__private_extern NSArray<PcsxrMemoryObject*> *__nullable CreateArrayByEnumeratingMemoryCardAtURL(NSURL *__nonnull location) NS_RETURNS_RETAINED;

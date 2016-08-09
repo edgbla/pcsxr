@@ -1,0 +1,6 @@
+[submodule "pcsxr/macosx/Vendor/SwiftAdditions"]
+	path = pcsxr/macosx/Vendor/SwiftAdditions
+	url = https://github.com/MaddTheSane/SwiftMacTypes.git
+[submodule "pcsxr/macosx/Vendor/memorymapping"]
+	path = pcsxr/macosx/Vendor/memorymapping
+	url = https://github.com/MaddTheSane/memorymapping.git

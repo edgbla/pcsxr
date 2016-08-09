@@ -1,13 +1,16 @@
 /* NetSfPeopsSPUPluginController */
 
 #import <Cocoa/Cocoa.h>
-#import "SPUPluginController.h"
 
-#ifdef USEOPENAL
-#define PluginController NetSfPeopsSPUALPluginController
-#else
-#define PluginController NetSfPeopsSPUSDLPluginController
-#endif
+@class SPUPluginController;
 
-@interface PluginController : SPUPluginController
-@end
+__private_extern void ReadConfig();
+
+#define kHighCompMode @"High Compatibility Mode"
+#define kSPUIRQWait @"SPU IRQ Wait"
+#define kXAPitch @"XA Pitch"
+#define kMonoSoundOut @"Mono Sound Output"
+
+#define kInterpolQual @"Interpolation Quality"
+#define kReverbQual @"Reverb Quality"
+#define kVolume @"Volume"

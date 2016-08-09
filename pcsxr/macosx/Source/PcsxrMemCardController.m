@@ -7,7 +7,8 @@
 //
 
 #import "PcsxrMemCardController.h"
-#import "PcsxrMemoryObject.h"
+//#import "PcsxrMemoryObject.h"
+#import "PCSXR-Swift.h"
 #import "ConfigurationController.h"
 #import "PcsxrMemCardHandler.h"
 #import "PcsxrMemCardArray.h"

@@ -229,7 +229,7 @@ Error messages (5xx):
     Invalid breakpoint address.
 */
 
-static int debugger_active = 0, paused = 0, trace = 0, printpc = 0, reset = 0, resetting = 0;
+static int debugger_active = 0, paused = 0, psxtrace = 0, printpc = 0, reset = 0, resetting = 0;
 static int mapping_e = 0, mapping_r8 = 0, mapping_r16 = 0, mapping_r32 = 0, mapping_w8 = 0, mapping_w16 = 0, mapping_w32 = 0;
 static int breakmp_e = 0, breakmp_r8 = 0, breakmp_r16 = 0, breakmp_r32 = 0, breakmp_w8 = 0, breakmp_w16 = 0, breakmp_w32 = 0;
 
@@ -348,12 +348,12 @@ void StopDebugger() {
 }
 
 void PauseDebugger() {
-    trace = 0;
+    psxtrace = 0;
     paused = 1;
 }
 
 void ResumeDebugger() {
-    trace = 0;
+    psxtrace = 0;
     paused = 0;
 }
 
@@ -387,13 +387,13 @@ int IsMapMarked(u32 address, int mask) {
 void ProcessDebug() {
     if (!debugger_active || reset || resetting)
         return;
-    if (trace) {
-        if (!(--trace)) {
+    if (psxtrace) {
+        if (!(--psxtrace)) {
             paused = 1;
         }
     }
     if (!paused) {
-		if(trace && printpc)
+		if(psxtrace && printpc)
 		{
 			char reply[256];
 			sprintf(reply, "219 %s\r\n", disR3000AF(psxMemRead32(psxRegs.pc), psxRegs.pc));
@@ -462,7 +462,7 @@ static void ProcessCommands() {
             sprintf(reply, "202 1.0\r\n");
             break;
         case 0x103:
-            sprintf(reply, "203 %i\r\n", paused ? 1 : trace ? 2 : 0);
+            sprintf(reply, "203 %i\r\n", paused ? 1 : psxtrace ? 2 : 0);
             break;
         case 0x110:
             sprintf(reply, "210 PC=%08X\r\n", psxRegs.pc);
@@ -1048,10 +1048,10 @@ static void ProcessCommands() {
         case 0x395:
             p = arguments;
             if (arguments) {
-                trace = strtol(arguments, &p, 10);
+                psxtrace = strtol(arguments, &p, 10);
             }
             if (p == arguments) {
-                trace = 1;
+                psxtrace = 1;
             }
             paused = 0;
             sprintf(reply, "495 Tracing\r\n");
@@ -1068,13 +1068,13 @@ static void ProcessCommands() {
             break;
         case 0x398:
             paused = 0;
-            trace = 0;
+            psxtrace = 0;
             reset = 2;
             sprintf(reply, "498 Soft resetting\r\n");
             break;
         case 0x399:
             paused = 0;
-            trace = 0;
+            psxtrace = 0;
             reset = 1;
             sprintf(reply, "499 Resetting\r\n");
             break;

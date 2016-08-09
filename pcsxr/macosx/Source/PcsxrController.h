@@ -2,38 +2,37 @@
 
 #import <Cocoa/Cocoa.h>
 #import "EmuThread.h"
-#import "PluginList.h"
-#import "RecentItemsMenu.h"
 
 @class ConfigurationController;
 @class CheatController;
+@class RecentItemsMenu;
 
-__private_extern void ShowHelpAndExit(FILE* output, int exitCode);
+__private_extern void ShowHelpAndExit(FILE* __nonnull output, int exitCode);
 extern BOOL wasFinderLaunch;
 
 @interface PcsxrController : NSObject <NSApplicationDelegate>
-@property (weak) IBOutlet RecentItemsMenu *recentItems;
-@property (strong, readonly) CheatController *cheatController;
+@property (weak, null_unspecified) IBOutlet RecentItemsMenu *recentItems;
+@property (strong, readonly, nullable) CheatController *cheatController;
 @property (readonly) BOOL endAtEmuClose;
 
-- (IBAction)ejectCD:(id)sender;
-- (IBAction)pause:(id)sender;
-- (IBAction)showCheatsWindow:(id)sender;
-- (IBAction)preferences:(id)sender;
-- (IBAction)reset:(id)sender;
-- (IBAction)runCD:(id)sender;
-- (IBAction)runIso:(id)sender;
-- (IBAction)runBios:(id)sender;
-- (IBAction)freeze:(id)sender;
-- (IBAction)defrost:(id)sender;
-- (IBAction)fullscreen:(id)sender;
-- (IBAction)pauseInBackground:(id)sender;
-- (void)runURL:(NSURL*)url;
+- (IBAction)ejectCD:(nullable id)sender;
+- (IBAction)pause:(nullable id)sender;
+- (IBAction)showCheatsWindow:(nullable id)sender;
+- (IBAction)preferences:(nullable id)sender;
+- (IBAction)reset:(nullable id)sender;
+- (IBAction)runCD:(nullable id)sender;
+- (IBAction)runIso:(nullable id)sender;
+- (IBAction)runBios:(nullable id)sender;
+- (IBAction)freeze:(nullable id)sender;
+- (IBAction)defrost:(nullable id)sender;
+- (IBAction)fullscreen:(nullable id)sender;
+- (IBAction)pauseInBackground:(nullable id)sender;
+- (void)runURL:(nonnull NSURL*)url;
 
 + (void)setConfigFromDefaults;
-+ (void)setDefaultFromConfig:(NSString *)defaultKey;
++ (void)setDefaultFromConfig:(nonnull NSString *)defaultKey;
 + (BOOL)biosAvailable;
-+ (NSString*)saveStatePath:(int)slot;
++ (nonnull NSString*)saveStatePath:(int)slot;
 + (void)saveState:(int)num;
 + (void)loadState:(int)num;
 

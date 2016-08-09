@@ -125,7 +125,7 @@
                         </tableHeaderView>
                     </scrollView>
                     <button toolTip="Clear all cheats" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="78">
-                        <rect key="frame" x="545" y="13" width="73" height="32"/>
+                        <rect key="frame" x="542" y="13" width="76" height="32"/>
                         <buttonCell key="cell" type="push" title="Clear" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="79">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -135,7 +135,7 @@
                         </connections>
                     </button>
                     <button toolTip="Apply Cheats" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="256">
-                        <rect key="frame" x="469" y="13" width="76" height="32"/>
+                        <rect key="frame" x="466" y="13" width="76" height="32"/>
                         <buttonCell key="cell" type="push" title="Apply" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="257">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -204,6 +204,7 @@
                     <constraint firstItem="DBF-Fx-sqP" firstAttribute="leading" secondItem="xfd-rR-U91" secondAttribute="trailing" constant="-1" id="fQh-TQ-YzN"/>
                     <constraint firstItem="DBF-Fx-sqP" firstAttribute="top" secondItem="23" secondAttribute="bottom" constant="8" symbolic="YES" id="gcQ-KX-9BU"/>
                     <constraint firstAttribute="bottom" secondItem="6" secondAttribute="bottom" constant="20" symbolic="YES" id="lF8-2f-uaL"/>
+                    <constraint firstItem="256" firstAttribute="width" secondItem="78" secondAttribute="width" id="owC-m0-J8e"/>
                     <constraint firstItem="78" firstAttribute="leading" secondItem="256" secondAttribute="trailing" constant="12" symbolic="YES" id="pZV-X6-uam"/>
                     <constraint firstItem="78" firstAttribute="baseline" secondItem="256" secondAttribute="baseline" id="r4R-02-9tu"/>
                     <constraint firstItem="4" firstAttribute="baseline" secondItem="6" secondAttribute="baseline" id="rAO-NL-fo9"/>
@@ -376,11 +377,19 @@ Gw
             </view>
         </window>
         <arrayController objectClassName="NSMutableArray" avoidsEmptySelection="NO" id="219" userLabel="Cheat Values">
+            <declaredKeys>
+                <string>cheatAddress</string>
+                <string>cheatValue</string>
+            </declaredKeys>
             <connections>
-                <binding destination="-2" name="contentArray" keyPath="self.tempCheatCodes" id="222"/>
+                <binding destination="-2" name="contentArray" keyPath="self.cheatValues" id="klx-Ag-sWh"/>
             </connections>
         </arrayController>
         <arrayController objectClassName="NSMutableArray" avoidsEmptySelection="NO" id="237" userLabel="Cheats">
+            <declaredKeys>
+                <string>cheatName</string>
+                <string>enabled</string>
+            </declaredKeys>
             <connections>
                 <binding destination="-2" name="contentArray" keyPath="self.cheats" id="238"/>
             </connections>

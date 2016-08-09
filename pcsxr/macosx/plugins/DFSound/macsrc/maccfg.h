@@ -6,8 +6,7 @@
 #ifndef PeopsSPU_maccfg_h
 #define PeopsSPU_maccfg_h
 
-void DoAbout();
-long DoConfiguration();
-void LoadConfiguration();
+__private_extern void DoAbout();
+__private_extern long DoConfiguration();
 
 #endif

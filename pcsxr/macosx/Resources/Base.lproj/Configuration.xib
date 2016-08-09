@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7702"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="ConfigurationController">
@@ -1278,42 +1278,42 @@
                 <binding destination="955" name="contentArray" keyPath="self.memCard1Array.memoryArray" id="1034"/>
             </connections>
         </arrayController>
-        <customObject id="384" userLabel="GraphicsController" customClass="PluginController">
+        <customObject id="384" userLabel="GraphicsController" customClass="PluginController" customModule="PCSXR" customModuleProvider="target">
             <connections>
                 <outlet property="aboutButton" destination="260" id="469"/>
                 <outlet property="configureButton" destination="262" id="470"/>
                 <outlet property="pluginMenu" destination="368" id="385"/>
             </connections>
         </customObject>
-        <customObject id="388" userLabel="SoundController" customClass="PluginController">
+        <customObject id="388" userLabel="SoundController" customClass="PluginController" customModule="PCSXR" customModuleProvider="target">
             <connections>
                 <outlet property="aboutButton" destination="290" id="471"/>
                 <outlet property="configureButton" destination="292" id="472"/>
                 <outlet property="pluginMenu" destination="371" id="389"/>
             </connections>
         </customObject>
-        <customObject id="392" userLabel="PadController" customClass="PluginController">
+        <customObject id="392" userLabel="PadController" customClass="PluginController" customModule="PCSXR" customModuleProvider="target">
             <connections>
                 <outlet property="aboutButton" destination="303" id="473"/>
                 <outlet property="configureButton" destination="301" id="474"/>
                 <outlet property="pluginMenu" destination="374" id="396"/>
             </connections>
         </customObject>
-        <customObject id="397" userLabel="CdromController" customClass="PluginController">
+        <customObject id="397" userLabel="CdromController" customClass="PluginController" customModule="PCSXR" customModuleProvider="target">
             <connections>
                 <outlet property="aboutButton" destination="296" id="475"/>
                 <outlet property="configureButton" destination="297" id="476"/>
                 <outlet property="pluginMenu" destination="377" id="398"/>
             </connections>
         </customObject>
-        <customObject id="620" userLabel="Net Plugin" customClass="PluginController">
+        <customObject id="620" userLabel="Net Plugin" customClass="PluginController" customModule="PCSXR" customModuleProvider="target">
             <connections>
                 <outlet property="aboutButton" destination="624" id="634"/>
                 <outlet property="configureButton" destination="625" id="635"/>
                 <outlet property="pluginMenu" destination="623" id="636"/>
             </connections>
         </customObject>
-        <customObject id="914" userLabel="Sio1 Plugin" customClass="PluginController">
+        <customObject id="914" userLabel="Sio1 Plugin" customClass="PluginController" customModule="PCSXR" customModuleProvider="target">
             <connections>
                 <outlet property="aboutButton" destination="904" id="916"/>
                 <outlet property="configureButton" destination="903" id="917"/>
