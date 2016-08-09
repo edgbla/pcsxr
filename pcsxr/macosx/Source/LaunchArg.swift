@@ -9,17 +9,17 @@
 import Cocoa
 
 @objc enum LaunchArgOrder: UInt32 {
-	case PreRun = 0
-	case Run = 200
-	case PostRun = 400
+	case preRun = 0
+	case run = 200
+	case postRun = 400
 }
 
 final class LaunchArg: NSObject {
 	let launchOrder: UInt32
-	let theBlock: dispatch_block_t
+	let theBlock: ()->()
 	let argument: String
 
-	init(launchOrder order: UInt32, argument arg: String, block: dispatch_block_t) {
+	init(launchOrder order: UInt32, argument arg: String, block: ()->()) {
 		launchOrder = order
 		argument = arg
 		theBlock = block
@@ -27,7 +27,7 @@ final class LaunchArg: NSObject {
 		super.init()
 	}
 	
-	func addToDictionary(toAdd: NSMutableDictionary) {
+	func addToDictionary(_ toAdd: NSMutableDictionary) {
 		toAdd[argument] = self;
 	}
 	

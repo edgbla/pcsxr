@@ -26,13 +26,13 @@ final class PluginList: NSObject {
 	}
 	
 	override init() {
-		let defaults = NSUserDefaults.standardUserDefaults()
+		let defaults = UserDefaults.standard
 		pluginList = []
 		
 		super.init()
 		
 		for plugType in typeList {
-			if let path = defaults.stringForKey(PcsxrPlugin.defaultKeyForType(plugType)) {
+			if let path = defaults.string(forKey: PcsxrPlugin.defaultKey(forType: plugType)) {
 				if path == "Disabled" {
 					continue
 				}
@@ -62,7 +62,7 @@ final class PluginList: NSObject {
 	}
 
 	func refreshPlugins() {
-		let fm = NSFileManager.defaultManager()
+		let fm = FileManager.default
 		
 		// verify that the ones that are in list still works
 		pluginList = pluginList.filter({ (plugIn) -> Bool in
@@ -71,15 +71,15 @@ final class PluginList: NSObject {
 		
 		// look for new ones in the plugin directory
 		for plugDir in PcsxrPlugin.pluginsPaths() {
-			if let dirEnum = fm.enumeratorAtPath(plugDir) {
+			if let dirEnum = fm.enumerator(atPath: plugDir) {
 				while let pName = dirEnum.nextObject() as? String {
 					if (pName as NSString).pathExtension == "psxplugin" ||
 						(pName as NSString).pathExtension == "so" {
 							dirEnum.skipDescendants() /* don't enumerate this directory */
-							if !(hasPluginAtPath((plugDir as NSString).stringByAppendingPathComponent(pName)) || hasPluginAtPath(pName)) {
+							if !(hasPluginAtPath((plugDir as NSString).appendingPathComponent(pName)) || hasPluginAtPath(pName)) {
 								if let plugin = PcsxrPlugin(path: pName) {
 									pluginList.append(plugin)
-								} else if let plugIn = PcsxrPlugin(path: (plugDir as NSString).stringByAppendingPathComponent(pName)) {
+								} else if let plugIn = PcsxrPlugin(path: (plugDir as NSString).appendingPathComponent(pName)) {
 									pluginList.append(plugIn)
 								}
 							}
@@ -108,13 +108,13 @@ final class PluginList: NSObject {
 		}
 	}
 
-	func pluginsForType(typeMask: Int32) -> [PcsxrPlugin] {
+	func pluginsForType(_ typeMask: Int32) -> [PcsxrPlugin] {
 		return pluginList.filter({ (plug) -> Bool in
 			return (plug.type & typeMask) == typeMask
 		})
 	}
 	
-	func hasPluginAtPath(path: String) -> Bool {
+	func hasPluginAtPath(_ path: String) -> Bool {
 		for plugin in pluginList {
 			if plugin.path == path {
 				return true
@@ -129,7 +129,7 @@ final class PluginList: NSObject {
 		return !missingPlugins
 	}
 	
-	@objc(activePluginForType:) func activePlugin(type type: Int32) -> PcsxrPlugin? {
+	@objc(activePluginForType:) func activePlugin(type: Int32) -> PcsxrPlugin? {
 		switch (type) {
 		case PSE_LT_GPU:
 			return activeGpuPlugin
@@ -154,7 +154,7 @@ final class PluginList: NSObject {
 		}
 	}
 	
-	@objc(setActivePlugin:forType:) func setActivePlugin(plugina: PcsxrPlugin, type: Int32) -> Bool {
+	@objc(setActivePlugin:forType:) func setActivePlugin(_ plugina: PcsxrPlugin, type: Int32) -> Bool {
 		var pluginPtr: PcsxrPlugin?
 		var plugin: PcsxrPlugin? = plugina
 		switch type {
@@ -180,11 +180,11 @@ final class PluginList: NSObject {
 		
 		// stop the old plugin and start the new one
 		if let aPlug = pluginPtr {
-			aPlug.shutdownAs(type)
+			aPlug.shutdown(as: type)
 			pluginPtr = nil;
 		}
 
-		if plugin!.runAs(type) != 0 {
+		if plugin!.run(as: type) != 0 {
 			plugin = nil
 		}
 		
@@ -220,12 +220,12 @@ final class PluginList: NSObject {
 			let tmpStr = UnsafeBufferPointer(start: strA, count: Int(strlen(strA)) + 1)
 			str = Array(tmpStr)
 		} else {
-			str = "Invalid Plugin".cStringUsingEncoding(NSUTF8StringEncoding)!
+			str = "Invalid Plugin".cString(using: String.Encoding.utf8)!
 		}
 
-		var dst = PcsxrPlugin.configEntriesForType(type)
-		while dst.memory != nil {
-			strlcpy(dst.memory, str, Int(MAXPATHLEN))
+		var dst = PcsxrPlugin.configEntries(forType: type)
+		while dst.pointee != nil {
+			strlcpy(dst.pointee, str, Int(MAXPATHLEN))
 			dst = dst.successor()
 		}
 		
@@ -242,9 +242,9 @@ final class PluginList: NSObject {
 	}
 	
 	func disableNetPlug() {
-		var dst = PcsxrPlugin.configEntriesForType(PSE_LT_NET)
-		while dst.memory != nil {
-			strcpy(dst.memory, "Disabled");
+		var dst = PcsxrPlugin.configEntries(forType: PSE_LT_NET)
+		while dst.pointee != nil {
+			strcpy(dst.pointee, "Disabled");
 			dst = dst.successor();
 		}
 	}
@@ -252,9 +252,9 @@ final class PluginList: NSObject {
 	func enableNetPlug() {
 		if let netPlug = activePlugin(type: PSE_LT_NET) {
 			let str = (netPlug.path as NSString).fileSystemRepresentation
-			var dst = PcsxrPlugin.configEntriesForType(PSE_LT_NET)
-			while dst.memory != nil {
-				strlcpy(dst.memory, str, Int(MAXPATHLEN));
+			var dst = PcsxrPlugin.configEntries(forType: PSE_LT_NET)
+			while dst.pointee != nil {
+				strlcpy(dst.pointee, str, Int(MAXPATHLEN));
 				dst = dst.successor();
 			}
 		}

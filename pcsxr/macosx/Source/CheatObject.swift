@@ -13,13 +13,13 @@ func ==(rhs: CheatObject, lhs: CheatObject) -> Bool {
 	return rhs.cheatName == lhs.cheatName && rhs.values == lhs.values
 }
 
-class CheatObject: NSObject, SequenceType {
+class CheatObject: NSObject, Sequence {
 	var cheatName: String
 	var values: [CheatValue]
 	var enabled: Bool
 	
 	init(cheat: Cheat) {
-		cheatName = String(UTF8String: cheat.Descr)!
+		cheatName = String(validatingUTF8: cheat.Descr)!
 		enabled = cheat.Enabled == 0 ? false : true
 		values = [CheatValue]()
 		for i in 0..<cheat.n {
@@ -30,11 +30,11 @@ class CheatObject: NSObject, SequenceType {
 		super.init()
 	}
 	
-	func addValuesObject(aVal: CheatValue) {
+	func addValuesObject(_ aVal: CheatValue) {
 		values.append(aVal)
 	}
 	
-	func addValueObject(aVal: CheatValue) {
+	func addValueObject(_ aVal: CheatValue) {
 		addValuesObject(aVal)
 	}
 	
@@ -51,8 +51,8 @@ class CheatObject: NSObject, SequenceType {
 		}
 	}
 	
-	func generate() -> IndexingGenerator<[CheatValue]> {
-		return values.generate()
+	func makeIterator() -> IndexingIterator<[CheatValue]> {
+		return values.makeIterator()
 	}
 	
 	init(name: String, enabled: Bool = false) {
@@ -75,7 +75,7 @@ class CheatObject: NSObject, SequenceType {
 		return self.hashValue
 	}
 	
-	override func isEqual(object: AnyObject?) -> Bool {
+	override func isEqual(_ object: AnyObject?) -> Bool {
 		if object == nil {
 			return false
 		}

@@ -10,14 +10,14 @@ import Cocoa
 import SwiftAdditions
 
 @objc enum PCSXRMemFlag: Int8 {
-	case Deleted
-	case Free
-	case Used
-	case Link
-	case EndLink
+	case deleted
+	case free
+	case used
+	case link
+	case endLink
 };
 
-private func imagesFromMcd(theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
+private func imagesFromMcd(_ theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
 	struct PSXRGBColor {
 		var r: UInt8
 		var g: UInt8
@@ -25,7 +25,7 @@ private func imagesFromMcd(theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
 	}
 
 	var toRet = [NSImage]()
-	let unwrapped = theBlock.memory
+	let unwrapped = theBlock.pointee
 	let iconArray: [Int16] = try! arrayFromObject(reflecting: unwrapped.Icon)
 	for i in 0..<unwrapped.IconCount {
 		if let imageRep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 16, pixelsHigh: 16, bitsPerSample: 8, samplesPerPixel: 3, hasAlpha: false, isPlanar: false, colorSpaceName: NSCalibratedRGBColorSpace, bytesPerRow: 16 * 3, bitsPerPixel: 24) {
@@ -37,7 +37,7 @@ private func imagesFromMcd(theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
 				let r: Int32 = Int32(c & 0x001F) << 3
 				let g: Int32 = (Int32(c & 0x03E0) >> 5) << 3
 				let b: Int32 = (Int32(c & 0x7C00) >> 10) << 3
-				cocoaImageData[v] = PSXRGBColor(r: UInt8(r), g: UInt8(g), b: UInt8(b))
+				cocoaImageData?[v] = PSXRGBColor(r: UInt8(r), g: UInt8(g), b: UInt8(b))
 			}
 			let memImage = NSImage()
 			memImage.addRepresentation(imageRep)
@@ -48,18 +48,18 @@ private func imagesFromMcd(theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
 	return toRet
 }
 
-private func memoryLabelFromFlag(flagNameIndex: PCSXRMemFlag) -> String {
+private func memoryLabelFromFlag(_ flagNameIndex: PCSXRMemFlag) -> String {
 	switch (flagNameIndex) {
-	case .EndLink:
+	case .endLink:
 		return MemLabelEndLink;
 		
-	case .Link:
+	case .link:
 		return MemLabelLink;
 		
-	case .Used:
+	case .used:
 		return MemLabelUsed;
 		
-	case .Deleted:
+	case .deleted:
 		return MemLabelDeleted;
 		
 	default:
@@ -87,56 +87,95 @@ private func blankImage() -> NSImage {
 		let imageRect = NSRect(x: 0, y: 0, width: 16, height: 16)
 		let anImg = NSImage(size: imageRect.size)
 		anImg.lockFocus()
-		NSColor.blackColor().set()
-		NSBezierPath.fillRect(imageRect)
+		NSColor.black.set()
+		NSBezierPath.fill(imageRect)
 		anImg.unlockFocus()
 		imageBlank = anImg
 	}
 	return imageBlank!.copy() as! NSImage
 }
 
-func MemFlagsFromBlockFlags(blockFlags: UInt8) -> PCSXRMemFlag {
+func MemFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
 	if ((blockFlags & 0xF0) == 0xA0) {
 		if ((blockFlags & 0xF) >= 1 && (blockFlags & 0xF) <= 3) {
-			return .Deleted;
+			return .deleted;
 		} else {
-			return .Free
+			return .free
 		}
 	} else if ((blockFlags & 0xF0) == 0x50) {
 		if ((blockFlags & 0xF) == 0x1) {
-			return .Used
+			return .used
 		} else if ((blockFlags & 0xF) == 0x2) {
-			return .Link
+			return .link
 		} else if ((blockFlags & 0xF) == 0x3) {
-			return .EndLink
+			return .endLink
 		}
 	} else {
-		return .Free;
+		return .free;
 	}
 	
 	//Xcode complains unless we do this...
 	NSLog("Unknown flag %x", blockFlags)
-	return .Free;
+	return .free;
 }
 
 final class PcsxrMemoryObject: NSObject {
+	private static var __once: () = {
+			func SetupAttrStr(_ mutStr: NSMutableAttributedString, txtclr: NSColor) {
+				let wholeStrRange = NSMakeRange(0, mutStr.string.characters.count);
+				let ourAttrs: [String: AnyObject] = [NSFontAttributeName : NSFont.systemFont(ofSize: NSFont.systemFontSize(for: .small)),
+					NSForegroundColorAttributeName: txtclr]
+				mutStr.addAttributes(ourAttrs, range: wholeStrRange)
+				mutStr.setAlignment(.center, range: wholeStrRange)
+			}
+			
+			var tmpStr = NSMutableAttributedString(string: MemLabelFree)
+			SetupAttrStr(tmpStr, txtclr: NSColor.green)
+			attribMemLabelFree = NSAttributedString(attributedString: tmpStr)
+			
+			#if DEBUG
+				tmpStr = NSMutableAttributedString(string: MemLabelEndLink)
+				SetupAttrStr(tmpStr, txtclr: NSColor.blue)
+				attribMemLabelEndLink = NSAttributedString(attributedString: tmpStr)
+				
+				tmpStr = NSMutableAttributedString(string: MemLabelLink)
+				SetupAttrStr(tmpStr, txtclr: NSColor.blue)
+				attribMemLabelLink = NSAttributedString(attributedString: tmpStr)
+				
+				tmpStr = NSMutableAttributedString(string: MemLabelUsed)
+				SetupAttrStr(tmpStr, txtclr: NSColor.controlTextColor)
+				attribMemLabelUsed = NSAttributedString(attributedString: tmpStr)
+			#else
+				tmpStr = NSMutableAttributedString(string: MemLabelMultiSave)
+				SetupAttrStr(tmpStr, txtclr: NSColor.blue)
+				attribMemLabelEndLink = AttributedString(attributedString: tmpStr)
+				attribMemLabelLink = attribMemLabelEndLink
+
+				//display nothing
+				attribMemLabelUsed = AttributedString(string: "")
+			#endif
+			
+			tmpStr = NSMutableAttributedString(string: MemLabelDeleted)
+			SetupAttrStr(tmpStr, txtclr: NSColor.red)
+			attribMemLabelDeleted = NSAttributedString(attributedString: tmpStr)
+		}()
 	let title: String
 	let name: String
 	let identifier: String
 	let imageArray: [NSImage]
 	let flag: PCSXRMemFlag
-	let indexes: NSIndexSet
+	let indexes: IndexSet
 	let hasImages: Bool
 	
 	var blockSize: Int {
 		return indexes.count
 	}
 	
-	init(mcdBlock infoBlock: UnsafePointer<McdBlock>, blockIndexes: NSIndexSet) {
+	init(mcdBlock infoBlock: UnsafePointer<McdBlock>, blockIndexes: IndexSet) {
 		self.indexes = blockIndexes
-		let unwrapped = infoBlock.memory
+		let unwrapped = infoBlock.pointee
 		flag = MemFlagsFromBlockFlags(unwrapped.Flags)
-		if flag == .Free {
+		if flag == .free {
 			imageArray = []
 			hasImages = false
 			title = "Free block"
@@ -144,11 +183,11 @@ final class PcsxrMemoryObject: NSObject {
 			name = ""
 		} else {
 			let sjisName: [CChar] = try! arrayFromObject(reflecting: unwrapped.sTitle, appendLastObject: 0)
-			if let aname = String(CString: sjisName, encoding:NSShiftJISStringEncoding) {
+			if let aname = String(cString: sjisName, encoding:String.Encoding.shiftJIS) {
 				title = aname
 			} else {
 				let usName: [CChar] = try! arrayFromObject(reflecting: unwrapped.Title, appendLastObject: 0)
-				title = String(CString: usName, encoding: NSASCIIStringEncoding)!
+				title = String(CString: usName, encoding: String.Encoding.ascii)
 			}
 			imageArray = imagesFromMcd(infoBlock)
 			if imageArray.count == 0 {
@@ -158,22 +197,22 @@ final class PcsxrMemoryObject: NSObject {
 			}
 			let memNameCArray: [CChar] = try! arrayFromObject(reflecting: unwrapped.Name, appendLastObject: 0)
 			let memIDCArray: [CChar] = try! arrayFromObject(reflecting: unwrapped.ID, appendLastObject: 0)
-			name = String(UTF8String: memNameCArray)!
-			identifier = String(UTF8String: memIDCArray)!
+			name = String(validatingUTF8: memNameCArray)!
+			identifier = String(validatingUTF8: memIDCArray)!
 		}
 		
 		super.init()
 	}
 	
 	convenience init(mcdBlock infoBlock: UnsafePointer<McdBlock>, startingIndex startIdx: Int, size memSize: Int) {
-		self.init(mcdBlock: infoBlock, blockIndexes: NSIndexSet(indexesInRange: NSRange(location: startIdx, length: memSize)))
+		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: NSRange(location: startIdx, length: memSize).toRange() ?? 0..<0))
 	}
 	
 	var iconCount: Int {
 		return imageArray.count
 	}
 
-	class func memFlagsFromBlockFlags(blockFlags: UInt8) -> PCSXRMemFlag {
+	class func memFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
 		return MemFlagsFromBlockFlags(blockFlags)
 	}
 	
@@ -189,69 +228,31 @@ final class PcsxrMemoryObject: NSObject {
 		let dst = CGImageDestinationCreateWithData(gifData, kUTTypeGIF, self.iconCount, nil)!
 		let gifPrep: NSDictionary = [kCGImagePropertyGIFDictionary as String: [kCGImagePropertyGIFDelayTime as String: Float(0.30)]];
 		for theImage in self.imageArray {
-			let imageRef = theImage.CGImageForProposedRect(nil, context: nil, hints: nil)!
+			let imageRef = theImage.cgImage(forProposedRect: nil, context: nil, hints: nil)!
 			CGImageDestinationAddImage(dst, imageRef, gifPrep)
 		}
 		CGImageDestinationFinalize(dst);
 		
-		let _memImage = NSImage(data: gifData)!
+		let _memImage = NSImage(data: gifData as Data)!
 		_memImage.size = NSMakeSize(32, 32)
 		return _memImage
 		}()
 	
-	private static var attribsInit: dispatch_once_t = 0
+	private static var attribsInit: Int = 0
 	var attributedFlagName: NSAttributedString {
-		dispatch_once(&PcsxrMemoryObject.attribsInit) {
-			func SetupAttrStr(mutStr: NSMutableAttributedString, txtclr: NSColor) {
-				let wholeStrRange = NSMakeRange(0, mutStr.string.characters.count);
-				let ourAttrs: [String: AnyObject] = [NSFontAttributeName : NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(.SmallControlSize)),
-					NSForegroundColorAttributeName: txtclr]
-				mutStr.addAttributes(ourAttrs, range: wholeStrRange)
-				mutStr.setAlignment(.Center, range: wholeStrRange)
-			}
-			
-			var tmpStr = NSMutableAttributedString(string: MemLabelFree)
-			SetupAttrStr(tmpStr, txtclr: NSColor.greenColor())
-			attribMemLabelFree = NSAttributedString(attributedString: tmpStr)
-			
-			#if DEBUG
-				tmpStr = NSMutableAttributedString(string: MemLabelEndLink)
-				SetupAttrStr(tmpStr, txtclr: NSColor.blueColor())
-				attribMemLabelEndLink = NSAttributedString(attributedString: tmpStr)
-				
-				tmpStr = NSMutableAttributedString(string: MemLabelLink)
-				SetupAttrStr(tmpStr, txtclr: NSColor.blueColor())
-				attribMemLabelLink = NSAttributedString(attributedString: tmpStr)
-				
-				tmpStr = NSMutableAttributedString(string: MemLabelUsed)
-				SetupAttrStr(tmpStr, txtclr: NSColor.controlTextColor())
-				attribMemLabelUsed = NSAttributedString(attributedString: tmpStr)
-			#else
-				tmpStr = NSMutableAttributedString(string: MemLabelMultiSave)
-				SetupAttrStr(tmpStr, txtclr: NSColor.blueColor())
-				attribMemLabelEndLink = NSAttributedString(attributedString: tmpStr)
-				attribMemLabelLink = attribMemLabelEndLink
-
-				//display nothing
-				attribMemLabelUsed = NSAttributedString(string: "")
-			#endif
-			
-			tmpStr = NSMutableAttributedString(string: MemLabelDeleted)
-			SetupAttrStr(tmpStr, txtclr: NSColor.redColor())
-			attribMemLabelDeleted = NSAttributedString(attributedString: tmpStr)
-		}
+		_ = PcsxrMemoryObject.__once
 		
 		switch (flag) {
-		case .EndLink:
+		case .endLink:
 			return attribMemLabelEndLink;
 			
-		case .Link:
+		case .link:
 			return attribMemLabelLink;
 			
-		case .Used:
+		case .used:
 			return attribMemLabelUsed;
 			
-		case .Deleted:
+		case .deleted:
 			return attribMemLabelDeleted;
 			
 		default:
@@ -266,7 +267,7 @@ final class PcsxrMemoryObject: NSObject {
 		return imageArray[0]
 	}
 	
-	class func memoryLabelFromFlag(flagNameIdx: PCSXRMemFlag) -> String {
+	class func memoryLabelFromFlag(_ flagNameIdx: PCSXRMemFlag) -> String {
 		return memoryLabelFromFlag(flagNameIdx)
 	}
 	
@@ -279,7 +280,7 @@ final class PcsxrMemoryObject: NSObject {
 	}
 	
 	var showCount: Bool {
-		if flag == .Free {
+		if flag == .free {
 			//Always show the size of the free blocks
 			return true;
 		} else {

@@ -13,14 +13,14 @@ final class PcsxrFreezeStateHandler: NSObject, PcsxrFileHandle {
 		return ["com.codeplex.pcsxr.freeze"]
 	}
 	
-	func handleFile(theFile: String) -> Bool {
+	func handleFile(_ theFile: String) -> Bool {
 		if CheckState((theFile as NSString).fileSystemRepresentation) != 0 {
 			return false
 		}
 		
 		if !EmuThread.active() {
 			let pluginList = PluginList.sharedList
-			if NSUserDefaults.standardUserDefaults().boolForKey("NetPlay") {
+			if UserDefaults.standard.bool(forKey: "NetPlay") {
 				pluginList!.enableNetPlug()
 			} else {
 				pluginList!.disableNetPlug()
@@ -29,6 +29,6 @@ final class PcsxrFreezeStateHandler: NSObject, PcsxrFileHandle {
 			EmuThread.run()
 		}
 		
-		return EmuThread.defrostAt(theFile)
+		return EmuThread.defrost(at: theFile)
 	}
 }

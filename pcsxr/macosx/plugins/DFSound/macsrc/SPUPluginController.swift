@@ -24,7 +24,7 @@ class SPUPluginController: NSWindowController {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		let spuBundle = NSBundle(forClass: self.dynamicType)
+		let spuBundle = Bundle(for: self.dynamicType)
 		
 		interpolValue.strings = [NSLocalizedString("(No Interpolation)", bundle: spuBundle, comment: "(No Interpolation)"),
 			NSLocalizedString("(Simple Interpolation)", bundle: spuBundle, comment: "(Simple Interpolation)"),
@@ -43,11 +43,11 @@ class SPUPluginController: NSWindowController {
 	}
 	
 	func loadValues() {
-		let defaults = NSUserDefaults.standardUserDefaults()
+		let defaults = UserDefaults.standard
 		ReadConfig()
 		
 		/* load from preferences */
-		keyValues = NSMutableDictionary(dictionary: defaults.dictionaryForKey(PrefsKey)!)
+		keyValues = NSMutableDictionary(dictionary: defaults.dictionary(forKey: PrefsKey)!)
 		
 		hiCompBox.integerValue = (keyValues[kHighCompMode] as! Bool) ? NSOnState : NSOffState
 		irqWaitBox.integerValue = (keyValues[kSPUIRQWait] as! Bool) ? NSOnState : NSOffState
@@ -59,8 +59,8 @@ class SPUPluginController: NSWindowController {
 		volumeValue.integerValue = (keyValues[kVolume] as! Int)
 	}
 	
-	@IBAction func ok(sender: AnyObject?) {
-		let defaults = NSUserDefaults.standardUserDefaults()
+	@IBAction func ok(_ sender: AnyObject?) {
+		let defaults = UserDefaults.standard
 		
 		let writeDic = NSMutableDictionary(dictionary: self.keyValues)
 		
@@ -74,7 +74,7 @@ class SPUPluginController: NSWindowController {
 		writeDic[kVolume] = volumeValue.integerValue
 		
 		// write to defaults
-		defaults.setObject(writeDic, forKey: PrefsKey)
+		defaults.set(writeDic, forKey: PrefsKey)
 		defaults.synchronize()
 		
 		// and set global values accordingly
@@ -83,13 +83,13 @@ class SPUPluginController: NSWindowController {
 		close()
 	}
 	
-	@IBAction func cancel(sender: AnyObject?) {
+	@IBAction func cancel(_ sender: AnyObject?) {
 		close()
 	}
 	
-	@IBAction func reset(sender: AnyObject?) {
-		let defaults = NSUserDefaults.standardUserDefaults()
-		defaults.removeObjectForKey(PrefsKey)
+	@IBAction func reset(_ sender: AnyObject?) {
+		let defaults = UserDefaults.standard
+		defaults.removeObject(forKey: PrefsKey)
 		loadValues()
 	}
 }

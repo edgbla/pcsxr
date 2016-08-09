@@ -9,7 +9,7 @@
 import Cocoa
 
 private func NSDocumentSharedController() -> NSDocumentController {
-	return NSDocumentController.sharedDocumentController()
+	return NSDocumentController.shared()
 }
 
 final class RecentItemsMenu: NSMenu {
@@ -23,26 +23,26 @@ final class RecentItemsMenu: NSMenu {
 		
 		// Populate the menu
 		let recentDocuments = NSDocumentSharedController().recentDocumentURLs
-		for (i, url) in recentDocuments.enumerate() {
+		for (i, url) in recentDocuments.enumerated() {
 			let tempItem = newMenuItem(url)
 			addMenuItem(tempItem, index: i)
 		}
 	}
 	
-	private func addMenuItem(item: NSMenuItem, index: Int = 0) {
-		insertItem(item, atIndex: index)
+	private func addMenuItem(_ item: NSMenuItem, index: Int = 0) {
+		insertItem(item, at: index)
 		
 		// Prevent menu from overflowing; the -2 accounts for the "Clear..." and the separator items
 		let maxNumItems = NSDocumentSharedController().maximumRecentDocumentCount
 		if numberOfItems - 2 > maxNumItems {
-			removeItemAtIndex(maxNumItems)
+			removeItem(at: maxNumItems)
 		}
 	}
 	
-	private func newMenuItem(documentURL: NSURL) -> NSMenuItem {
-		let documentPath = documentURL.path!
-		let lastName = NSFileManager.defaultManager().displayNameAtPath(documentPath)
-		let fileImage = NSWorkspace.sharedWorkspace().iconForFile(documentPath)
+	private func newMenuItem(_ documentURL: URL) -> NSMenuItem {
+		let documentPath = documentURL.path
+		let lastName = FileManager.default.displayName(atPath: documentPath)
+		let fileImage = NSWorkspace.shared().icon(forFile: documentPath)
 		fileImage.size = NSSize(width: 16, height: 16)
 		
 		let newItem = NSMenuItem(title: lastName, action: #selector(RecentItemsMenu.openRecentItem(_:)), keyEquivalent: "")
@@ -53,20 +53,20 @@ final class RecentItemsMenu: NSMenu {
 		return newItem
 	}
 	
-	func addRecentItem(documentURL: NSURL) {
+	func addRecentItem(_ documentURL: URL) {
 		NSDocumentSharedController().noteNewRecentDocumentURL(documentURL)
 		
 		if let item = findMenuItemByURL(documentURL) {
 			removeItem(item)
-			insertItem(item, atIndex: 0)
+			insertItem(item, at: 0)
 		} else {
 			addMenuItem(newMenuItem(documentURL))
 		}
 	}
 	
-	private func findMenuItemByURL(url: NSURL) -> NSMenuItem? {
-		for item in itemArray {
-			if let repItem = item.representedObject as? NSURL where repItem == url {
+	private func findMenuItemByURL(_ url: URL) -> NSMenuItem? {
+		for item in items {
+			if let repItem = item.representedObject as? URL, repItem == url {
 				return item
 			}
 		}
@@ -74,14 +74,14 @@ final class RecentItemsMenu: NSMenu {
 		return nil
 	}
 	
-	@objc private func openRecentItem(sender: NSMenuItem) {
-		if let url = sender.representedObject as? NSURL {
+	@objc private func openRecentItem(_ sender: NSMenuItem) {
+		if let url = sender.representedObject as? URL {
 			addRecentItem(url)
-			pcsxr.runURL(url)
+			pcsxr.run(url)
 		}
 	}
 	
-	@IBAction func clearRecentDocuments(sender: AnyObject?) {
+	@IBAction func clearRecentDocuments(_ sender: AnyObject?) {
 		removeDocumentItems()
 		NSDocumentSharedController().clearRecentDocuments(sender)
 	}
@@ -89,7 +89,7 @@ final class RecentItemsMenu: NSMenu {
 	// Document items are menu items with tag 0
 	private func removeDocumentItems() {
 		var removeItemsArray = [NSMenuItem]()
-		for item in itemArray as [NSMenuItem] {
+		for item in items as [NSMenuItem] {
 			if item.tag == 0 {
 				removeItemsArray.append(item)
 			}

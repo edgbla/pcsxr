@@ -17,17 +17,17 @@ final class PluginController: NSObject {
 	private var defaultKey = ""
 	private var pluginType: Int32 = 0
 	
-	@IBAction func doAbout(sender: AnyObject?) {
+	@IBAction func doAbout(_ sender: AnyObject?) {
 		let plugin = plugins[pluginMenu.indexOfSelectedItem]
-		plugin.aboutAs(pluginType)
+		plugin.about(as: pluginType)
 	}
 	
-	@IBAction func doConfigure(sender: AnyObject?) {
+	@IBAction func doConfigure(_ sender: AnyObject?) {
 		let plugin = plugins[pluginMenu.indexOfSelectedItem]
-		plugin.configureAs(pluginType)
+		plugin.configure(as: pluginType)
 	}
 
-	@IBAction func selectPlugin(sender: AnyObject?) {
+	@IBAction func selectPlugin(_ sender: AnyObject?) {
 		if sender === pluginMenu {
 			let index = pluginMenu.indexOfSelectedItem
 			if index != -1 {
@@ -38,43 +38,43 @@ final class PluginController: NSObject {
 				}
 				
 				// write selection to defaults
-				NSUserDefaults.standardUserDefaults().setObject(plugin.path, forKey: defaultKey)
+				UserDefaults.standard.set(plugin.path, forKey: defaultKey)
 				
 				// set button states
-				aboutButton.enabled = plugin.hasAboutAs(pluginType)
-				configureButton.enabled = plugin.hasConfigureAs(pluginType)
+				aboutButton.isEnabled = plugin.hasAbout(as: pluginType)
+				configureButton.isEnabled = plugin.hasConfigure(as: pluginType)
 			} else {
 				// set button states
-				aboutButton.enabled = false
-				configureButton.enabled = false
+				aboutButton.isEnabled = false
+				configureButton.isEnabled = false
 			}
 		}
 	}
 
 	/// must be called before anything else
-	func setPluginsTo(list: [PcsxrPlugin], withType type: Int32) {
+	func setPluginsTo(_ list: [PcsxrPlugin], withType type: Int32) {
 		// remember the list
 		pluginType = type
-		plugins = list.sort({ (lhs, rhs) -> Bool in
+		plugins = list.sorted(by: { (lhs, rhs) -> Bool in
 			let sortOrder = lhs.description.localizedStandardCompare(rhs.description)
-			return sortOrder == .OrderedAscending
+			return sortOrder == .orderedAscending
 		})
-		defaultKey = PcsxrPlugin.defaultKeyForType(pluginType)
+		defaultKey = PcsxrPlugin.defaultKey(forType: pluginType)
 		
 		// clear the previous menu items
 		pluginMenu.removeAllItems()
 		
 		// load the currently selected plugin
-		let sel = NSUserDefaults.standardUserDefaults().stringForKey(defaultKey)
+		let sel = UserDefaults.standard.string(forKey: defaultKey)
 		
 		// add the menu entries
 		for plug in plugins {
 			let description = plug.description
-			pluginMenu.addItemWithTitle(description)
+			pluginMenu.addItem(withTitle: description)
 			
 			// make sure the currently selected is set as such
-			if let sel = sel where sel == plug.path {
-				pluginMenu.selectItemWithTitle(description)
+			if let sel = sel, sel == plug.path {
+				pluginMenu.selectItem(withTitle: description)
 			}
 		}
 		

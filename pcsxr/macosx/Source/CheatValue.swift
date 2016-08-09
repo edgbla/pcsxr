@@ -43,7 +43,7 @@ class CheatValue: NSObject, NSCopying {
 		return String(format: "%08x %04x", cheatAddress, cheatValue)
 	}
 	
-	override func isEqual(object: AnyObject?) -> Bool {
+	override func isEqual(_ object: AnyObject?) -> Bool {
 		if object == nil {
 			return false
 		}
@@ -55,7 +55,7 @@ class CheatValue: NSObject, NSCopying {
 		}
 	}
 	
-	func copyWithZone(zone: NSZone) -> AnyObject {
+	func copy(with zone: NSZone?) -> AnyObject {
 		return CheatValue(address: cheatAddress, value: cheatValue)
 	}
 }

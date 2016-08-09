@@ -20,7 +20,7 @@ final class NamedSlider: NSSlider {
 				}
 				
 			}
-			return NSLocalizedString("(Unknown)", bundle: NSBundle(forClass: self.dynamicType), comment: "Unknown")
+			return NSLocalizedString("(Unknown)", bundle: Bundle(for: self.dynamicType), comment: "Unknown")
 		}
 		set {
 			
