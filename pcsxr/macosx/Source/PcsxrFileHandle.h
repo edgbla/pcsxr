@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol PcsxrFileHandle <NSObject>
-+ (NSArray<NSString*> *)supportedUTIs;
+@property (readonly, copy, class) NSArray<NSString*> *supportedUTIs;
 - (BOOL)handleFile:(NSString *)theFile;
 @end
 

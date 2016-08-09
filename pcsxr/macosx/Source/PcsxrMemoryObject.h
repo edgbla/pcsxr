@@ -33,6 +33,7 @@ typedef NS_ENUM(char, PCSXRMemFlag) {
 + (NSImage *)blankImage;
 + (PCSXRMemFlag)memFlagsFromBlockFlags:(unsigned char)blockFlags;
 
+- (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (instancetype)initWithMcdBlock:(McdBlock *)infoBlockc startingIndex:(uint8_t)startIdx size:(uint8_t)memSize DEPRECATED_ATTRIBUTE;
 - (instancetype)initWithMcdBlock:(McdBlock *)infoBlockc blockIndexes:(NSIndexSet*)blockIdx NS_DESIGNATED_INITIALIZER;
 

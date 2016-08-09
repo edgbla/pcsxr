@@ -9,9 +9,7 @@
 import Cocoa
 
 final class PcsxrFreezeStateHandler: NSObject, PcsxrFileHandle {
-	class func supportedUTIs() -> [String] {
-		return ["com.codeplex.pcsxr.freeze"]
-	}
+	static let supportedUTIs = ["com.codeplex.pcsxr.freeze"]
 	
 	func handleFile(_ theFile: String) -> Bool {
 		if CheckState((theFile as NSString).fileSystemRepresentation) != 0 {

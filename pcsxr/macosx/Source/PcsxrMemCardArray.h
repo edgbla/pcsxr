@@ -12,7 +12,7 @@
 @interface PcsxrMemCardArray : NSObject
 
 - (nonnull instancetype)initWithMemoryCardNumber:(int)carNum NS_DESIGNATED_INITIALIZER;
-
+- (nonnull instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (void)deleteMemoryBlocksAtIndex:(int)slotnum;
 - (void)compactMemory;
 
