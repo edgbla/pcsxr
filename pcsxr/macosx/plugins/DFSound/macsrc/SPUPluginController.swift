@@ -24,7 +24,7 @@ class SPUPluginController: NSWindowController {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		let spuBundle = Bundle(for: self.dynamicType)
+		let spuBundle = Bundle(for: type(of: self))
 		
 		interpolValue.strings = [NSLocalizedString("(No Interpolation)", bundle: spuBundle, comment: "(No Interpolation)"),
 			NSLocalizedString("(Simple Interpolation)", bundle: spuBundle, comment: "(Simple Interpolation)"),

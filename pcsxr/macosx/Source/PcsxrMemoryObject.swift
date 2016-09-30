@@ -29,16 +29,17 @@ private func imagesFromMcd(_ theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
 	let iconArray: [Int16] = try! arrayFromObject(reflecting: unwrapped.Icon)
 	for i in 0..<unwrapped.IconCount {
 		if let imageRep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 16, pixelsHigh: 16, bitsPerSample: 8, samplesPerPixel: 3, hasAlpha: false, isPlanar: false, colorSpaceName: NSCalibratedRGBColorSpace, bytesPerRow: 16 * 3, bitsPerPixel: 24) {
-			let cocoaImageData = UnsafeMutablePointer<PSXRGBColor>(imageRep.bitmapData)
-			for v in 0..<256 {
-				//let x = v % 16
-				//let y = v / 16
-				let c = iconArray[Int(i * 256) + v]
-				let r: Int32 = Int32(c & 0x001F) << 3
-				let g: Int32 = (Int32(c & 0x03E0) >> 5) << 3
-				let b: Int32 = (Int32(c & 0x7C00) >> 10) << 3
-				cocoaImageData?[v] = PSXRGBColor(r: UInt8(r), g: UInt8(g), b: UInt8(b))
-			}
+			imageRep.bitmapData?.withMemoryRebound(to: PSXRGBColor.self, capacity: 256, { (cocoaImageData) -> Void in
+				for v in 0..<256 {
+					//let x = v % 16
+					//let y = v / 16
+					let c = iconArray[Int(i * 256) + v]
+					let r: Int32 = Int32(c & 0x001F) << 3
+					let g: Int32 = (Int32(c & 0x03E0) >> 5) << 3
+					let b: Int32 = (Int32(c & 0x7C00) >> 10) << 3
+					cocoaImageData[v] = PSXRGBColor(r: UInt8(r), g: UInt8(g), b: UInt8(b))
+				}
+			})
 			let memImage = NSImage()
 			memImage.addRepresentation(imageRep)
 			memImage.size = NSSize(width: 32, height: 32)
@@ -183,11 +184,11 @@ final class PcsxrMemoryObject: NSObject {
 			name = ""
 		} else {
 			let sjisName: [CChar] = try! arrayFromObject(reflecting: unwrapped.sTitle, appendLastObject: 0)
-			if let aname = String(cString: sjisName, encoding:String.Encoding.shiftJIS) {
+			if let aname = String(cString: sjisName, encoding: String.Encoding.shiftJIS) {
 				title = aname
 			} else {
 				let usName: [CChar] = try! arrayFromObject(reflecting: unwrapped.Title, appendLastObject: 0)
-				title = String(CString: usName, encoding: String.Encoding.ascii)
+				title = String(cString: usName, encoding: String.Encoding.ascii)!
 			}
 			imageArray = imagesFromMcd(infoBlock)
 			if imageArray.count == 0 {
@@ -205,7 +206,7 @@ final class PcsxrMemoryObject: NSObject {
 	}
 	
 	convenience init(mcdBlock infoBlock: UnsafePointer<McdBlock>, startingIndex startIdx: Int, size memSize: Int) {
-		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: NSRange(location: startIdx, length: memSize).toRange() ?? 0..<0))
+		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: NSRange(location: startIdx, length: memSize).toRange() ?? startIdx ..< (startIdx + memSize)))
 	}
 	
 	var iconCount: Int {

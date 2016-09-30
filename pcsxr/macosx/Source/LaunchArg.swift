@@ -19,7 +19,7 @@ final class LaunchArg: NSObject {
 	let theBlock: ()->()
 	let argument: String
 
-	init(launchOrder order: UInt32, argument arg: String, block: ()->()) {
+	init(launchOrder order: UInt32, argument arg: String, block: @escaping ()->()) {
 		launchOrder = order
 		argument = arg
 		theBlock = block

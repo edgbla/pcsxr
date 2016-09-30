@@ -75,7 +75,7 @@ class CheatObject: NSObject, Sequence {
 		return self.hashValue
 	}
 	
-	override func isEqual(_ object: AnyObject?) -> Bool {
+	override func isEqual(_ object: Any?) -> Bool {
 		if object == nil {
 			return false
 		}

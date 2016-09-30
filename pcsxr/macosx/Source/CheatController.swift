@@ -66,7 +66,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		setDocumentEdited(false)
 	}
 	
-	override func observeValue(forKeyPath keyPath: String?, of object: AnyObject?, change: [NSKeyValueChangeKey : AnyObject]?, context: UnsafeMutablePointer<Void>?) {
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 		if keyPath == kCheatsName {
 			setDocumentEdited(true)
 		}
@@ -153,7 +153,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		
 		let toRemoveIndex = editCheatView.selectedRowIndexes
 		willChange(.removal, valuesAt: toRemoveIndex, forKey: kTempCheatCodesName)
-		_ = removeObjects(inArray: &cheatValues, atIndexes: toRemoveIndex)
+		cheatValues.remove(indexes: toRemoveIndex)
 		didChange(.removal, valuesAt: toRemoveIndex, forKey: kTempCheatCodesName)
 	}
 	
@@ -208,7 +208,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		setDocumentEdited(false)
 	}
 	
-	func windowShouldClose(_ sender: AnyObject) -> Bool {
+	func windowShouldClose(_ sender: Any) -> Bool {
 		if let windSender = sender as? NSWindow, (!windSender.isDocumentEdited || windSender != window) {
 			return true
 		} else {
@@ -248,7 +248,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		
 		let toRemoveIndex = cheatView.selectedRowIndexes
 		willChange(.removal, valuesAt: toRemoveIndex, forKey: kCheatsName)
-		_ = removeObjects(inArray: &cheats, atIndexes: toRemoveIndex)
+		cheats.remove(indexes: toRemoveIndex)
 		didChange(.removal, valuesAt: toRemoveIndex, forKey: kCheatsName)
 		setDocumentEdited(true)
 	}
