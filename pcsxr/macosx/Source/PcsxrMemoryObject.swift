@@ -123,7 +123,7 @@ func MemFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
 final class PcsxrMemoryObject: NSObject {
 	private static var __once: () = {
 			func SetupAttrStr(_ mutStr: NSMutableAttributedString, txtclr: NSColor) {
-				let wholeStrRange = NSMakeRange(0, mutStr.string.characters.count);
+				let wholeStrRange = NSMakeRange(0, mutStr.string.utf16.count);
 				let ourAttrs: [String: AnyObject] = [NSFontAttributeName : NSFont.systemFont(ofSize: NSFont.systemFontSize(for: .small)),
 					NSForegroundColorAttributeName: txtclr]
 				mutStr.addAttributes(ourAttrs, range: wholeStrRange)
