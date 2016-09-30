@@ -2,7 +2,9 @@
 #ifndef __EXTENDED_KEYS_H__
 #define __EXTENDED_KEYS_H__
 
-enum {
+#include <CoreFoundation/CFBase.h>
+
+CF_ENUM(int) {
 	PSX_FREEZE_KEY = 0xFFBE/*XK_F1*/,
 	PSX_NEXT_FREEZE_SLOT_KEY = 0xFFBF/*XK_F2*/,
 	PSX_DEFROST_KEY = 0xFFC0/*XK_F3*/,

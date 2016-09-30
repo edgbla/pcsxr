@@ -123,8 +123,8 @@ func MemFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
 final class PcsxrMemoryObject: NSObject {
 	private static var __once: () = {
 			func SetupAttrStr(_ mutStr: NSMutableAttributedString, txtclr: NSColor) {
-				let wholeStrRange = NSMakeRange(0, mutStr.string.utf16.count);
-				let ourAttrs: [String: AnyObject] = [NSFontAttributeName : NSFont.systemFont(ofSize: NSFont.systemFontSize(for: .small)),
+				let wholeStrRange = NSMakeRange(0, mutStr.string.utf16.count)
+				let ourAttrs: [String: Any] = [NSFontAttributeName : NSFont.systemFont(ofSize: NSFont.systemFontSize(for: .small)),
 					NSForegroundColorAttributeName: txtclr]
 				mutStr.addAttributes(ourAttrs, range: wholeStrRange)
 				mutStr.setAlignment(.center, range: wholeStrRange)
@@ -220,7 +220,7 @@ final class PcsxrMemoryObject: NSObject {
 	private(set) lazy var image: NSImage = {
 		if (self.hasImages == false) {
 			let tmpBlank = blankImage()
-			tmpBlank.size = NSMakeSize(32, 32)
+			tmpBlank.size = NSSize(width: 32, height: 32)
 			return tmpBlank
 		}
 		
@@ -235,11 +235,10 @@ final class PcsxrMemoryObject: NSObject {
 		CGImageDestinationFinalize(dst);
 		
 		let _memImage = NSImage(data: gifData as Data)!
-		_memImage.size = NSMakeSize(32, 32)
+		_memImage.size = NSSize(width: 32, height: 32)
 		return _memImage
 		}()
 	
-	private static var attribsInit: Int = 0
 	var attributedFlagName: NSAttributedString {
 		_ = PcsxrMemoryObject.__once
 		
@@ -268,7 +267,7 @@ final class PcsxrMemoryObject: NSObject {
 		return imageArray[0]
 	}
 	
-	class func memoryLabelFromFlag(_ flagNameIdx: PCSXRMemFlag) -> String {
+	@objc(memoryLabelFromFlag:) class func memoryLabel(from flagNameIdx: PCSXRMemFlag) -> String {
 		return memoryLabelFromFlag(flagNameIdx)
 	}
 	

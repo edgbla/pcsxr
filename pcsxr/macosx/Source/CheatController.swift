@@ -138,7 +138,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 	}
 	
 	@IBAction func closeCheatEdit(_ sender: NSButton) {
-		window!.endSheet(editCheatWindow, returnCode: sender.tag == 1 ? NSCancelButton : NSOKButton)
+		window!.endSheet(editCheatWindow, returnCode: sender.tag == 1 ? NSModalResponseCancel : NSModalResponseOK)
 	}
 	
 	@IBAction func changeCheat(_ sender: AnyObject?) {
@@ -183,7 +183,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		cheatValues = newCheats
 		editCheatView.reloadData()
 		window!.beginSheet(editCheatWindow, completionHandler: { (returnCode) -> Void in
-			if returnCode == NSOKButton {
+			if returnCode == NSModalResponseOK {
 				let tmpCheat = self.cheats[self.cheatView.selectedRow]
 				if tmpCheat.values != self.cheatValues {
 					tmpCheat.values = self.cheatValues

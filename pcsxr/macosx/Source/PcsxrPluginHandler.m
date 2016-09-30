@@ -78,17 +78,20 @@
 		NSURL *supportURL = [[NSFileManager defaultManager] URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
 		NSURL *url = [[supportURL URLByAppendingPathComponent:@"Pcsxr" isDirectory:YES] URLByAppendingPathComponent:@"PlugIns" isDirectory:YES];
 
-		NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithPath:theFile];
-		NSString *dst = [[url URLByAppendingPathComponent:[wrapper filename]] path];
-		if ([wrapper writeToFile:dst atomically:NO updateFilenames:NO]) {
+		NSFileWrapper *wrapper = [[NSFileWrapper alloc] initWithURL:[NSURL fileURLWithPath:theFile] options:0 error:NULL];
+		NSURL *dst = [url URLByAppendingPathComponent:[wrapper filename]];
+		if ([wrapper writeToURL:dst options:0 originalContentsURL:[NSURL fileURLWithPath:theFile] error:NULL]) {
 			[[NSWorkspace sharedWorkspace] noteFileSystemChanged:[url path]];
-			NSRunInformationalAlertPanel(NSLocalizedString(@"Installation Succesfull", nil),
-										 NSLocalizedString(@"The installation of the specified plugin was succesfull. In order to use it, please restart the application.", nil), 
-										 nil, nil, nil);
+			NSAlert *alert = [NSAlert new];
+			alert.messageText = NSLocalizedString(@"Installation Succesfull", nil);
+			alert.informativeText = NSLocalizedString(@"The installation of the specified plugin was succesfull. In order to use it, please restart the application.", nil);
+			alert.alertStyle = NSAlertStyleInformational;
+			[alert runModal];
 		} else {
-			NSRunAlertPanel(NSLocalizedString(@"Installation Failed!", nil),
-							NSLocalizedString(@"The installation of the specified plugin failed. Please try again, or make a manual install.", nil), 
-							nil, nil, nil);
+			NSAlert *alert = [NSAlert new];
+			alert.messageText = NSLocalizedString(@"Installation Failed!", nil);
+			alert.informativeText = NSLocalizedString(@"The installation of the specified plugin failed. Please try again, or make a manual install.", nil);
+			[alert runModal];
 		}
 	}
 	return YES;

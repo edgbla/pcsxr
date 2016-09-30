@@ -8,10 +8,6 @@
 
 import Cocoa
 
-private func NSDocumentSharedController() -> NSDocumentController {
-	return NSDocumentController.shared()
-}
-
 final class RecentItemsMenu: NSMenu {
 	@IBOutlet weak var pcsxr: PcsxrController! = nil
 	
@@ -22,7 +18,7 @@ final class RecentItemsMenu: NSMenu {
 		autoenablesItems = true
 		
 		// Populate the menu
-		let recentDocuments = NSDocumentSharedController().recentDocumentURLs
+		let recentDocuments = NSDocumentController.shared().recentDocumentURLs
 		for (i, url) in recentDocuments.enumerated() {
 			let tempItem = newMenuItem(url)
 			addMenuItem(tempItem, index: i)
@@ -33,7 +29,7 @@ final class RecentItemsMenu: NSMenu {
 		insertItem(item, at: index)
 		
 		// Prevent menu from overflowing; the -2 accounts for the "Clear..." and the separator items
-		let maxNumItems = NSDocumentSharedController().maximumRecentDocumentCount
+		let maxNumItems = NSDocumentController.shared().maximumRecentDocumentCount
 		if numberOfItems - 2 > maxNumItems {
 			removeItem(at: maxNumItems)
 		}
@@ -54,9 +50,9 @@ final class RecentItemsMenu: NSMenu {
 	}
 	
 	func addRecentItem(_ documentURL: URL) {
-		NSDocumentSharedController().noteNewRecentDocumentURL(documentURL)
+		NSDocumentController.shared().noteNewRecentDocumentURL(documentURL)
 		
-		if let item = findMenuItemByURL(documentURL) {
+		if let item = findMenuItem(by: documentURL) {
 			removeItem(item)
 			insertItem(item, at: 0)
 		} else {
@@ -64,7 +60,7 @@ final class RecentItemsMenu: NSMenu {
 		}
 	}
 	
-	private func findMenuItemByURL(_ url: URL) -> NSMenuItem? {
+	private func findMenuItem(by url: URL) -> NSMenuItem? {
 		for item in items {
 			if let repItem = item.representedObject as? URL, repItem == url {
 				return item
@@ -83,13 +79,13 @@ final class RecentItemsMenu: NSMenu {
 	
 	@IBAction func clearRecentDocuments(_ sender: AnyObject?) {
 		removeDocumentItems()
-		NSDocumentSharedController().clearRecentDocuments(sender)
+		NSDocumentController.shared().clearRecentDocuments(sender)
 	}
 	
 	// Document items are menu items with tag 0
 	private func removeDocumentItems() {
 		var removeItemsArray = [NSMenuItem]()
-		for item in items as [NSMenuItem] {
+		for item in items {
 			if item.tag == 0 {
 				removeItemsArray.append(item)
 			}
