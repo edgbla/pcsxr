@@ -126,10 +126,20 @@ void ReadConfig()
 	NSString *theAddress = [ipAddress  stringValue];
 	NSInteger asciiLen = [theAddress lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
 	if (asciiLen > (sizeof(conf.ipAddress) - 1)) {
-		NSBeginAlertSheet(NSLocalizedStringInBundle(@"Address Too Long", curBundle, nil), nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", NSLocalizedStringInBundle(@"The address is too long.\n\nTry to use only the IP address and not a host name.", curBundle, nil));
+		NSAlert *alert = [NSAlert new];
+		alert.informativeText = NSLocalizedStringInBundle(@"Address Too Long", curBundle, nil);
+		alert.messageText = NSLocalizedStringInBundle(@"The address is too long.\n\nTry to use only the IP address and not a host name.", curBundle, nil);
+		[alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
+			// do nothing
+		}];
 		return;
 	} else if (asciiLen == 0) {
-		NSBeginAlertSheet(NSLocalizedStringInBundle(@"Blank Address", curBundle, nil), nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"%@", NSLocalizedStringInBundle(@"The address specified is either blank, or can't be converted to ASCII.\n\nTry connecting directly using the IP address using latin numerals.", curBundle, nil));
+		NSAlert *alert = [NSAlert new];
+		alert.informativeText = NSLocalizedStringInBundle(@"Blank Address", curBundle, nil);
+		alert.messageText = NSLocalizedStringInBundle(@"The address specified is either blank, or can't be converted to ASCII.\n\nTry connecting directly using the IP address using latin numerals.", curBundle, nil);
+		[alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
+			// do nothing
+		}];
 		return;
 	}
 

@@ -125,10 +125,20 @@ void ReadConfig()
 	NSString *theAddress = [self.ipAddressField stringValue];
 	NSInteger asciiLen = [theAddress lengthOfBytesUsingEncoding:NSASCIIStringEncoding];
 	if (asciiLen > (sizeof(settings.ip) - 1)) {
-		NSBeginAlertSheet(@"Address too long", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The address is too long.\n\nTry to use only the IP address and not a host name.");
+		NSAlert *alert = [NSAlert new];
+		alert.informativeText = @"Address Too Long";
+		alert.messageText = @"The address is too long.\n\nTry to use only the IP address and not a host name.";
+		[alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
+			// do nothing
+		}];
 		return;
 	} else if (asciiLen == 0) {
-		NSBeginAlertSheet(@"Blank address", nil, nil, nil, [self window], nil, NULL, NULL, NULL, @"The address specified is either blank, or can't be converted to ASCII.\n\nTry connecting directly using the IP address using latin numerals.");
+		NSAlert *alert = [NSAlert new];
+		alert.informativeText = @"Blank address";
+		alert.messageText = @"The address specified is either blank, or can't be converted to ASCII.\n\nTry connecting directly using the IP address using latin numerals.";
+		[alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
+			// do nothing
+		}];
 		return;
 	}
 	

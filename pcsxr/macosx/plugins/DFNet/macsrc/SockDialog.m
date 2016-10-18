@@ -19,10 +19,13 @@ void SysMessage(const char *fmt, ...)
 	va_end(list);
 	
 	fprintf(stderr, "message %s\n", [errString UTF8String]);
-	NSAlert *alert = [NSAlert alertWithMessageText:@"Error" defaultButton:@"Stop" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", errString];
+	NSAlert *alert = [NSAlert new];
+	alert.informativeText = @"Error";
+	alert.messageText = errString;
+	[alert addButtonWithTitle:@"Stop"];
 	[alert setAlertStyle:NSCriticalAlertStyle];
 	NSInteger result = [alert runModal];
-	if (result == NSAlertDefaultReturn) {
+	if (result == NSAlertFirstButtonReturn) {
 		Class theEmuClass = NSClassFromString(@"EmuThread");
 		if (theEmuClass) {
 			[theEmuClass stop];
