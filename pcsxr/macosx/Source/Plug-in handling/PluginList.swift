@@ -21,7 +21,7 @@ final class PluginList: NSObject {
 	private var activeNetPlugin: PcsxrPlugin?
 	private var activeSIO1Plugin: PcsxrPlugin?
 	
-	class var sharedList: PluginList? {
+	@objc(sharedList) class var shared: PluginList? {
 		return sPluginList
 	}
 	
@@ -70,7 +70,7 @@ final class PluginList: NSObject {
 		})
 		
 		// look for new ones in the plugin directory
-		for plugDir in PcsxrPlugin.pluginsPaths() {
+		for plugDir in PcsxrPlugin.pluginsPaths {
 			if let dirEnum = fm.enumerator(atPath: plugDir) {
 				while let pName = dirEnum.nextObject() as? String {
 					if (pName as NSString).pathExtension == "psxplugin" ||
@@ -91,7 +91,7 @@ final class PluginList: NSObject {
 		// check the we have the needed plugins
 		missingPlugins = false
 		for i in 0..<4 {
-			let plugin = activePlugin(type: typeList[i])
+			let plugin = activePlugin(for: typeList[i])
 			if plugin == nil {
 				let list = pluginsForType(typeList[i])
 				var j = 0
@@ -129,7 +129,7 @@ final class PluginList: NSObject {
 		return !missingPlugins
 	}
 	
-	@objc(activePluginForType:) func activePlugin(type: Int32) -> PcsxrPlugin? {
+	@objc(activePluginForType:) func activePlugin(for type: Int32) -> PcsxrPlugin? {
 		switch (type) {
 		case PSE_LT_GPU:
 			return activeGpuPlugin
@@ -159,7 +159,7 @@ final class PluginList: NSObject {
 		var plugin: PcsxrPlugin? = plugina
 		switch type {
 		case PSE_LT_SIO1, PSE_LT_GPU, PSE_LT_CDR, PSE_LT_SPU, PSE_LT_PAD, PSE_LT_NET:
-			pluginPtr = activePlugin(type: type)
+			pluginPtr = activePlugin(for: type)
 			
 		default:
 			return false
@@ -169,7 +169,7 @@ final class PluginList: NSObject {
 			return true
 		}
 		
-		let active = (pluginPtr != nil) && EmuThread.active()
+		let active = (pluginPtr != nil) && EmuThread.active
 		var wasPaused = false
 		if active {
 			//TODO: temporary freeze?
@@ -250,7 +250,7 @@ final class PluginList: NSObject {
 	}
 	
 	func enableNetPlug() {
-		if let netPlug = activePlugin(type: PSE_LT_NET) {
+		if let netPlug = activePlugin(for: PSE_LT_NET) {
 			let str = (netPlug.path as NSString).fileSystemRepresentation
 			var dst = PcsxrPlugin.configEntries(forType: PSE_LT_NET)
 			while dst.pointee != nil {

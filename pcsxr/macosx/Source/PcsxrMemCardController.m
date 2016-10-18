@@ -126,12 +126,23 @@
 	availBlocks = [toCard availableBlocks];
 	if (freeConsBlocks == -1 && availBlocks >= cardSize) {
 		PcsxrMemoryObject *tmpmemobj = (fromCard.memoryArray)[selectedIndex];
-		NSInteger copyOK = NSRunInformationalAlertPanel(NSLocalizedString(@"Free Size", nil), NSLocalizedString(@"Memory card %i does not have enough free consecutive blocks.\n\nIn order to copy over \"%@,\" memory card %i must be compressed. Compressing memory cards will make deleted blocks unrecoverable.\n\nDo you want to continue?", nil), NSLocalizedString(@"Yes", nil), NSLocalizedString(@"No", nil), nil, cardnum, tmpmemobj.name, cardnum);
-		if (copyOK != NSAlertDefaultReturn) {
+		NSAlert *alert = [NSAlert new];
+		alert.messageText = NSLocalizedString(@"Free Size", nil);
+		alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"Memory card %i does not have enough free consecutive blocks.\n\nIn order to copy over \"%@,\" memory card %i must be compressed. Compressing memory cards will make deleted blocks unrecoverable.\n\nDo you want to continue?", nil), cardnum, tmpmemobj.name, cardnum];
+		[alert addButtonWithTitle:NSLocalizedString(@"Yes", nil)];
+		[alert addButtonWithTitle:NSLocalizedString(@"No", nil)];
+		alert.alertStyle = NSAlertStyleInformational;
+		
+		NSInteger copyOK = [alert runModal];
+		if (copyOK != NSAlertFirstButtonReturn) {
 			return;
 		}
 	} else if (cardSize > availBlocks) {
-		NSRunCriticalAlertPanel(NSLocalizedString(@"No Free Space", nil), NSLocalizedString(@"Memory card %d doesn't have %d free consecutive blocks on it. Please remove some blocks on that card to continue", nil), nil, nil, nil, availBlocks, cardnum);
+		NSAlert *alert = [NSAlert new];
+		alert.alertStyle = NSAlertStyleCritical;
+		alert.messageText = NSLocalizedString(@"No Free Space", nil);
+		alert.informativeText = [NSString stringWithFormat: NSLocalizedString(@"Memory card %d doesn't have %d free consecutive blocks on it. Please remove some blocks on that card to continue", nil), availBlocks, cardnum];
+		[alert runModal];
 		return;
 	}
 	
@@ -147,8 +158,13 @@
 
 - (IBAction)formatCard:(id)sender
 {
-	NSInteger formatOkay = NSRunAlertPanel(NSLocalizedString(@"Format Card", nil), NSLocalizedString(@"Formatting a memory card will remove all data on it.\n\nThis cannot be undone.", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Format", nil), nil);
-	if (formatOkay == NSAlertAlternateReturn) {
+	NSAlert *alert = [NSAlert new];
+	alert.messageText = NSLocalizedString(@"Format Card", nil);
+	alert.informativeText = NSLocalizedString(@"Formatting a memory card will remove all data on it.\n\nThis cannot be undone.", nil);
+	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+	[alert addButtonWithTitle:NSLocalizedString(@"Format", nil)];
+	NSInteger formatOkay = [alert runModal];
+	if (formatOkay == NSAlertSecondButtonReturn) {
 		NSInteger memCardSelect = [sender tag];
 		if (memCardSelect == 1) {
 			CreateMcd(Config.Mcd1);
@@ -199,8 +215,13 @@
 		return;
 	}
 	
-	NSInteger deleteOkay = NSRunAlertPanel(NSLocalizedString(@"Delete Block", @"The block will be deleted"), NSLocalizedString(@"Deleting a block will remove all saved data on that block.\n\nThis cannot be undone.", @"Delete block cannot be undone"), NSLocalizedString(@"Cancel", @"Cancel"), NSLocalizedString(@"Delete", nil), nil);
-	if (deleteOkay == NSAlertAlternateReturn) {
+	NSAlert *alert = [NSAlert new];
+	alert.informativeText = NSLocalizedString(@"Delete Block", @"The block will be deleted");
+	alert.messageText = NSLocalizedString(@"Deleting a block will remove all saved data on that block.\n\nThis cannot be undone.", @"Delete block cannot be undone");
+	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+	[alert addButtonWithTitle:NSLocalizedString(@"Delete", nil)];
+	NSInteger deleteOkay = [alert runModal];
+	if (deleteOkay == NSAlertSecondButtonReturn) {
 		[self deleteMemoryBlocksAtIndex:(int)selectedIndex card:(int)memCardSelect];
 		
 		if (memCardSelect == 1) {

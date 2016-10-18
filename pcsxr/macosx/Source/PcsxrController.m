@@ -430,7 +430,11 @@ static void PSXDiscAppearedCallback(DADiskRef disk, void *context)
 static void ParseErrorStr(NSString *errStr)
 {
 	NSLog(@"Parse error: %@", errStr);
-	NSRunCriticalAlertPanel(@"Parsing error", @"%@\n\nPlease check the command line options and try again.\n\nPCSXR will now quit.", nil, nil, nil, errStr);
+	NSAlert *alert = [NSAlert new];
+	alert.alertStyle = NSAlertStyleCritical;
+	alert.messageText = @"Parsing error";
+	alert.informativeText = [NSString stringWithFormat:@"%@\n\nPlease check the command line options and try again.\n\nPCSXR will now quit.", errStr];
+	[alert runModal];
 	ShowHelpAndExit(stderr, EXIT_FAILURE);
 }
 
@@ -481,9 +485,11 @@ otherblock();\
 		// configure plugins
 		[self preferences:nil];
 		
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Missing plugins!", nil),
-								NSLocalizedString(@"Pcsxr is missing one or more critical plugins. You will need to install these in order to play games.", nil),
-								nil, nil, nil);
+		NSAlert *alert = [[NSAlert alloc] init];
+		alert.alertStyle = NSAlertStyleCritical;
+		alert.messageText = NSLocalizedString(@"Missing plugins!", nil);
+		alert.informativeText = NSLocalizedString(@"Pcsxr is missing one or more critical plugins. You will need to install these in order to play games.", nil);
+		[alert runModal];
 	}
 	
 	if (![PcsxrController biosAvailable]) {
@@ -491,10 +497,14 @@ otherblock();\
 			NSFileManager *manager = [NSFileManager defaultManager];
 			NSURL *supportURL = [manager URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:NULL];
 			NSURL *biosURL = [[supportURL URLByAppendingPathComponent:@"Pcsxr"] URLByAppendingPathComponent:@"Bios"];
-			NSInteger retVal = NSRunInformationalAlertPanel(NSLocalizedString(@"Missing BIOS!", nil),
-															NSLocalizedString(@"Pcsxr wasn't able to locate any Playstation BIOS ROM files. This means that it will run in BIOS simulation mode which is less stable and compatible than using a real Playstation BIOS.\nIf you have a BIOS available, please copy it to\n%@", nil),
-															NSLocalizedString(@"Okay", @"OK"), NSLocalizedString(@"Show Folder", @"Show Folder"), nil, [[biosURL path] stringByAbbreviatingWithTildeInPath]);
-			if (retVal == NSAlertAlternateReturn) {
+			NSAlert *alert = [[NSAlert alloc] init];
+			alert.alertStyle = NSAlertStyleInformational;
+			alert.messageText = NSLocalizedString(@"Missing BIOS!", nil);
+			alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"Pcsxr wasn't able to locate any Playstation BIOS ROM files. This means that it will run in BIOS simulation mode which is less stable and compatible than using a real Playstation BIOS.\nIf you have a BIOS available, please copy it to\n%@", nil), [[biosURL path] stringByAbbreviatingWithTildeInPath]];
+			[alert addButtonWithTitle:NSLocalizedString(@"Okay", @"OK")];
+			[alert addButtonWithTitle:NSLocalizedString(@"Show Folder", @"Show Folder")];
+			NSInteger retVal = [alert runModal];
+			if (retVal == NSAlertSecondButtonReturn) {
 				[[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[biosURL]];
 			}
 		});
@@ -964,17 +974,24 @@ otherblock();\
 	if ([[filename pathExtension] compare:@"bin" options:(NSCaseInsensitiveSearch | NSWidthInsensitiveSearch)]) {
 		NSDictionary *attrib = [fm attributesOfItemAtPath:filename error:NULL];
 		if ([[attrib fileType] isEqualToString:NSFileTypeRegular] && ([attrib fileSize] % (256 * 1024)) == 0 && [attrib fileSize] > 0 ) {
-			NSAlert *biosInfo = [NSAlert alertWithMessageText:NSLocalizedString(@"PlayStation BIOS File", @"PSX BIOS File") defaultButton:NSLocalizedString(@"BIOS_Copy", @"copy the BIOS over") alternateButton:NSLocalizedString(@"Cancel", @"Cancel") otherButton:NSLocalizedString(@"BIOS_Move", @"Move the bios over") informativeTextWithFormat:NSLocalizedString(@"The file \"%@\" seems to be a BIOS file. Do you want PCSX-R to copy it to the proper location?", @"Can we copy the BIOS?")];
+			
+			NSAlert *biosInfo = [NSAlert new];
+			biosInfo.messageText = NSLocalizedString(@"PlayStation BIOS File", @"PSX BIOS File");
+			biosInfo.informativeText = [NSString stringWithFormat:NSLocalizedString(@"The file \"%@\" seems to be a BIOS file. Do you want PCSX-R to copy it to the proper location?", @"Can we copy the BIOS?"), filename];
+			[biosInfo addButtonWithTitle:NSLocalizedString(@"BIOS_Copy", @"copy the BIOS over")];
+			[biosInfo addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+			[biosInfo addButtonWithTitle:NSLocalizedString(@"BIOS_Move", @"Move the bios over")];
 			biosInfo.alertStyle = NSInformationalAlertStyle;
 			switch ([biosInfo runModal]) {
 				case NSAlertFirstButtonReturn:
-				case NSAlertDefaultReturn:
 				{
 					NSError *theErr = nil;
 					NSURL *biosDirPath = [NSURL fileURLWithPath:[fm stringWithFileSystemRepresentation:Config.BiosDir length:strlen(Config.BiosDir)] isDirectory:YES];
 					NSURL *biosPath = [biosDirPath URLByAppendingPathComponent:[filename lastPathComponent]];
 					if ([biosPath checkResourceIsReachableAndReturnError:NULL]) {
-						NSAlert *alreadyThere = [NSAlert alertWithMessageText:NSLocalizedString(@"BIOS Already Exists", @"BIOS file already there.") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"There already exists a BIOS file at \"%1$@\": not copying the file at \"%2$@\".\n\nIf you do want to use the BIOS file at \"%2$@\", delete the BIOS at \"%1$@\".", @"What to do"), [biosPath path], filename];
+						NSAlert *alreadyThere = [NSAlert new];
+						alreadyThere.messageText = NSLocalizedString(@"BIOS Already Exists", @"BIOS file already there.");
+						alreadyThere.informativeText = [NSString stringWithFormat:NSLocalizedString(@"There already exists a BIOS file at \"%1$@\": not copying the file at \"%2$@\".\n\nIf you do want to use the BIOS file at \"%2$@\", delete the BIOS at \"%1$@\".", @"What to do"), [biosPath path], filename];
 						alreadyThere.alertStyle = NSCriticalAlertStyle;
 						[alreadyThere runModal];
 						return NO;
@@ -987,13 +1004,14 @@ otherblock();\
 					break;
 					
 				case NSAlertThirdButtonReturn:
-				case NSAlertOtherReturn:
 				{
 					NSError *theErr = nil;
 					NSURL *biosDirPath = [NSURL fileURLWithPath:[fm stringWithFileSystemRepresentation:Config.BiosDir length:strlen(Config.BiosDir)] isDirectory:YES];
 					NSURL *biosPath = [biosDirPath URLByAppendingPathComponent:[filename lastPathComponent]];
 					if ([biosPath checkResourceIsReachableAndReturnError:NULL]) {
-						NSAlert *alreadyThere = [NSAlert alertWithMessageText:NSLocalizedString(@"BIOS Already Exists", @"BIOS file already there.") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"There already exists a BIOS file at \"%1$@\": not moving the file at \"%2$@\".\n\nIf you do want to use the BIOS file at \"%2$@\", delete the BIOS at \"%1$@\".", @"What to do"), [biosPath path], filename];
+						NSAlert *alreadyThere = [NSAlert new];
+						alreadyThere.messageText = NSLocalizedString(@"BIOS Already Exists", @"BIOS file already there.");
+						alreadyThere.informativeText = [NSString stringWithFormat:NSLocalizedString(@"There already exists a BIOS file at \"%1$@\": not copying the file at \"%2$@\".\n\nIf you do want to use the BIOS file at \"%2$@\", delete the BIOS at \"%1$@\".", @"What to do"), [biosPath path], filename];
 						alreadyThere.alertStyle = NSCriticalAlertStyle;
 						[alreadyThere runModal];
 						return NO;
@@ -1015,7 +1033,10 @@ otherblock();\
 	NSError *err = nil;
 	NSString *utiFile = [workspace typeOfFile:filename error:&err];
 	if (err) {
-		NSRunAlertPanel(NSLocalizedString(@"Error opening file", nil), NSLocalizedString(@"Unable to open %@: %@", nil), nil, nil, nil, [filename lastPathComponent], err);
+		NSAlert *alert = [NSAlert new];
+		alert.messageText = NSLocalizedString(@"Error opening file", nil);
+		alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"Unable to open %@: %@", nil),  [filename lastPathComponent], err];
+		[alert runModal];
 		return NO;
 	}
 	static NSArray *handlers = nil;

@@ -64,7 +64,7 @@
 
 // Cocoa Code
 "Plugin Initialization Failed!" = "Plugin Initialization Failed!";
-"Pcsxr failed to initialize the selected %@ plugin (error=%i).\nThe plugin might not work with your system." = "Pcsxr failed to initialize the selected %1$@ plugin (error=%2$i).\nThe plugin might not work with your system.";
+"Pcsxr failed to initialize the selected %@ plugin (error=%li).\nThe plugin might not work with your system." = "Pcsxr failed to initialize the selected %1$@ plugin (error=%2$li).\nThe plugin might not work with your system.";
 //"Error!" = "Error!";
 //"Installation Succesfull" = "Installation Succesfull";
 //"Installation Failed!" = "Installation Failed!";

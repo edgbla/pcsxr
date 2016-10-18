@@ -443,7 +443,7 @@ void ReadConfig(void)
 - (void)hacksSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
 	NSParameterAssert(sheet == hacksWindow);
-	if (returnCode == NSCancelButton) {
+	if (returnCode == NSAlertSecondButtonReturn) {
 		//Reset hack preferences.
 		[self loadHacksValues];
 	} else {
@@ -461,16 +461,17 @@ void ReadConfig(void)
 - (IBAction)closeHacks:(id)sender
 {
 	if ([sender tag] == 1) {
-		[NSApp endSheet:hacksWindow returnCode:NSOKButton];
+		[self.window endSheet:hacksWindow returnCode:NSAlertFirstButtonReturn];
 	} else {
-		[NSApp endSheet:hacksWindow returnCode:NSCancelButton];
+		[self.window endSheet:hacksWindow returnCode:NSAlertSecondButtonReturn];
 	}
 }
 
 - (IBAction)showHacks:(id)sender
 {
-	[NSApp beginSheet:hacksWindow modalForWindow:[self window] modalDelegate:self
-	   didEndSelector:@selector(hacksSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+	[self.window beginSheet:hacksWindow completionHandler:^(NSModalResponse returnCode) {
+		[self hacksSheetDidEnd:hacksWindow returnCode:returnCode contextInfo:NULL];
+	}];
 }
 
 - (IBAction)toggleCheck:(id)sender

@@ -17,10 +17,12 @@ typedef NS_ENUM(char, EmuThreadPauseStatus) {
 	PauseStateIsPaused
 };
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface EmuThread : NSObject
 
-- (void)EmuThreadRun:(id)anObject;
-- (void)EmuThreadRunBios:(id)anObject;
+- (void)EmuThreadRun:(nullable id)anObject;
+- (void)EmuThreadRunBios:(nullable id)anObject;
 - (void)handleEvents;
 
 + (void)run;
@@ -41,6 +43,13 @@ typedef NS_ENUM(char, EmuThreadPauseStatus) {
 + (void)freezeAt:(NSString *)path which:(int)num;
 + (BOOL)defrostAt:(NSString *)path;
 
+@property (class, readonly, getter=isPaused) BOOL paused;
+@property (class, readonly) EmuThreadPauseStatus pausedState;
+@property (class, readonly) BOOL active;
+@property (class, readonly, getter=isRunBios) BOOL runBios;
+
 @end
 
-extern EmuThread *emuThread;
+extern EmuThread *__nullable emuThread;
+
+NS_ASSUME_NONNULL_END

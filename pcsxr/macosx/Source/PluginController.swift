@@ -33,7 +33,7 @@ final class PluginController: NSObject {
 			if index != -1 {
 				let plugin = plugins[index];
 				
-				if !PluginList.sharedList!.setActivePlugin(plugin, type: pluginType) {
+				if !PluginList.shared!.setActivePlugin(plugin, type: pluginType) {
 					/* plugin won't initialize */
 				}
 				

@@ -18,9 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)prefixForType:(int)type;
 + (NSString *)defaultKeyForType:(int)type;
 + (char *__nullable *__nonnull)configEntriesForType:(int)type;
-+ (NSArray<NSString*> *)pluginsPaths;
+@property (class, readonly, copy) NSArray<NSString*> *pluginsPaths;
 
 - (nullable instancetype)initWithPath:(NSString *)aPath NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithURL:(NSURL *)aPath;
 
 @property (readonly, copy) NSString *displayVersion;
 - (BOOL)hasAboutAs:(int)type;

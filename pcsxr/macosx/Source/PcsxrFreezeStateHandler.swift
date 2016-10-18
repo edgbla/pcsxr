@@ -16,8 +16,8 @@ final class PcsxrFreezeStateHandler: NSObject, PcsxrFileHandle {
 			return false
 		}
 		
-		if !EmuThread.active() {
-			let pluginList = PluginList.sharedList
+		if !EmuThread.active {
+			let pluginList = PluginList.shared
 			if UserDefaults.standard.bool(forKey: "NetPlay") {
 				pluginList!.enableNetPlug()
 			} else {

@@ -117,6 +117,14 @@
 	return returnArray;
 }
 
+- (nullable instancetype)initWithURL:(NSURL *)aPath
+{
+	if (!aPath.fileURL) {
+		return nil;
+	}
+	return [self initWithPath:[aPath path]];
+}
+
 - (instancetype)initWithPath:(NSString *)aPath
 {
 	if (!(self = [super init])) {
@@ -277,9 +285,11 @@
 	if (0 == res) {
 		active |= aType;
 	} else {
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Plugin Initialization Failed!", nil),
-								NSLocalizedString(@"Pcsxr failed to initialize the selected %@ plugin (error=%i).\nThe plugin might not work with your system.", nil),
-								nil, nil, nil, [PcsxrPlugin prefixForType:aType], res);
+		NSAlert *alert = [NSAlert new];
+		alert.informativeText = NSLocalizedString(@"Plugin Initialization Failed!", nil);
+		alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Pcsxr failed to initialize the selected %@ plugin (error=%li).\nThe plugin might not work with your system.", nil), [PcsxrPlugin prefixForType:aType], res];
+		alert.alertStyle = NSAlertStyleCritical;
+		[alert runModal];
 		return res;
 	}
 	
