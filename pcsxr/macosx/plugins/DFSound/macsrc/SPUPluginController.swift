@@ -8,7 +8,9 @@
 
 import Cocoa
 
-private let PrefsKey = APP_ID + " Settings"
+private var PrefsKey: String {
+	return APP_ID + " Settings"
+}
 
 class SPUPluginController: NSWindowController {
 	@IBOutlet var hiCompBox: NSCell!
@@ -20,7 +22,7 @@ class SPUPluginController: NSWindowController {
 	@IBOutlet var xaSpeedBox: NSCell!
 	@IBOutlet var volumeValue: NamedSlider!
 	
-	var keyValues = NSMutableDictionary()
+	var keyValues = [String: Any]()
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -47,7 +49,7 @@ class SPUPluginController: NSWindowController {
 		ReadConfig()
 		
 		/* load from preferences */
-		keyValues = NSMutableDictionary(dictionary: defaults.dictionary(forKey: PrefsKey)!)
+		keyValues = defaults.dictionary(forKey: PrefsKey)!
 		
 		hiCompBox.integerValue = (keyValues[kHighCompMode] as! Bool) ? NSOnState : NSOffState
 		irqWaitBox.integerValue = (keyValues[kSPUIRQWait] as! Bool) ? NSOnState : NSOffState
@@ -62,7 +64,7 @@ class SPUPluginController: NSWindowController {
 	@IBAction func ok(_ sender: AnyObject?) {
 		let defaults = UserDefaults.standard
 		
-		let writeDic = NSMutableDictionary(dictionary: self.keyValues)
+		var writeDic = self.keyValues
 		
 		writeDic[kHighCompMode] = hiCompBox.integerValue == NSOnState ? true : false
 		writeDic[kSPUIRQWait] = irqWaitBox.integerValue == NSOnState ? true : false

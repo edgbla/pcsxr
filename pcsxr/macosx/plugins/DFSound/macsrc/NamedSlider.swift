@@ -15,7 +15,7 @@ final class NamedSlider: NSSlider {
 		get {
 			if let ourStrs = strings {
 				let index = self.integerValue
-				if (index >= 0 && index < ourStrs.count) {
+				if index >= 0 && index < ourStrs.count {
 					return ourStrs[index];
 				}
 				
