@@ -2106,7 +2106,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				TargetAttributes = {
 					2BB3D68205427FE200831ACB = {
 						LastSwiftMigration = 0800;
@@ -3251,6 +3251,8 @@
 		551A76BA178693FF0052D185 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				EXPORTED_SYMBOLS_FILE = plugins/DFXVideo/DFXVideo.exp;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3271,6 +3273,8 @@
 		551A76BB178693FF0052D185 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				EXPORTED_SYMBOLS_FILE = plugins/DFXVideo/DFXVideo.exp;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3385,6 +3389,8 @@
 		551A774D17869C280052D185 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				EXPORTED_SYMBOLS_FILE = plugins/PeopsXgl/PeopsXgl.exp;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -3407,6 +3413,8 @@
 		551A774E17869C280052D185 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				EXPORTED_SYMBOLS_FILE = plugins/PeopsXgl/PeopsXgl.exp;
 				GCC_NO_COMMON_BLOCKS = NO;
@@ -3579,6 +3587,7 @@
 		557649B91786B09E007C4457 /* Instrument */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3710,6 +3719,8 @@
 		557649BF1786B09E007C4457 /* Instrument */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				EXPORTED_SYMBOLS_FILE = plugins/DFXVideo/DFXVideo.exp;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3730,6 +3741,8 @@
 		557649C01786B09E007C4457 /* Instrument */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				CLANG_ENABLE_MODULES = NO;
 				CLANG_WARN_EMPTY_BODY = YES;
 				EXPORTED_SYMBOLS_FILE = plugins/PeopsXgl/PeopsXgl.exp;
 				GCC_NO_COMMON_BLOCKS = NO;
@@ -3897,6 +3910,7 @@
 		71F353F90FD98DFE00CBEC28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3966,6 +3980,7 @@
 		71F353FA0FD98DFE00CBEC28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4019,6 +4034,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				WARNING_CFLAGS = (
 					"-Wno-comment",
 					"-Wobjc-interface-ivars",
