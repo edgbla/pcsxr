@@ -30,7 +30,7 @@ BOOL wasFinderLaunch = NO;
 "\t-bios         launch into the BIOS\n" \
 "\n" \
 "Additional options:\n" \
-"\t-nogui       closes PCSX-R at when the emulation has ended\n" \
+"\t-nogui       closes PCSX-R when the emulation has ended\n" \
 "\t-mcd1 path   sets the fist memory card to path\n" \
 "\t-mcd2 path   sets the second memory card to path\n" \
 "\t-freeze path loads freeze state from path\n" \
@@ -471,6 +471,10 @@ otherblock();\
 
 - (void)dealloc
 {
+	if (_diskSession) {
+		CFRelease(_diskSession);
+		_diskSession = NULL;
+	}
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

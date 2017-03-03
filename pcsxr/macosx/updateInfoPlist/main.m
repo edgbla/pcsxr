@@ -10,6 +10,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define SVNAddRev 95806
+
 int main(int argc, const char * argv[])
 {
 	@autoreleasepool {
@@ -44,7 +46,10 @@ int main(int argc, const char * argv[])
 			outString = [outString stringByReplacingOccurrencesOfString:@"m" withString:@""];
 		}
 		
-		plistDict[@"CFBundleVersion"] = outString;
+		NSInteger outNumber = [outString integerValue];
+		outNumber += SVNAddRev;
+		
+		plistDict[@"CFBundleVersion"] = [NSString stringWithFormat:@"%ld", outNumber];
 
 		[plistDict writeToFile:[NSString stringWithFormat:@"%@vers.plist", plistLocation] atomically:NO];
 	}

@@ -22,6 +22,7 @@ typedef NS_OPTIONS(unsigned int, EmulationEvents) {
 	EMUEVENT_STOP	= (1<<2)
 };
 
+NSString *__nonnull const kEmuWindowDidCloseNotification = @"emuWindowDidClose";
 EmuThread *emuThread = nil;
 static NSString *defrostPath = nil;
 static EmulationEvents safeEvent;

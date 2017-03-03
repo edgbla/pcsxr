@@ -149,11 +149,11 @@ final class PcsxrMemoryObject: NSObject {
 			#else
 				tmpStr = NSMutableAttributedString(string: MemLabelMultiSave)
 				SetupAttrStr(tmpStr, txtclr: NSColor.blue)
-				attribMemLabelEndLink = AttributedString(attributedString: tmpStr)
+				attribMemLabelEndLink = NSAttributedString(attributedString: tmpStr)
 				attribMemLabelLink = attribMemLabelEndLink
 
 				//display nothing
-				attribMemLabelUsed = AttributedString(string: "")
+				attribMemLabelUsed = NSAttributedString(string: "")
 			#endif
 			
 			tmpStr = NSMutableAttributedString(string: MemLabelDeleted)
@@ -206,7 +206,7 @@ final class PcsxrMemoryObject: NSObject {
 	}
 	
 	convenience init(mcdBlock infoBlock: UnsafePointer<McdBlock>, startingIndex startIdx: Int, size memSize: Int) {
-		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: NSRange(location: startIdx, length: memSize).toRange() ?? startIdx ..< (startIdx + memSize)))
+		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: NSRange(location: startIdx, length: memSize).toRange()!))
 	}
 	
 	var iconCount: Int {

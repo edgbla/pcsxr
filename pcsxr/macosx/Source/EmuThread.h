@@ -7,9 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <setjmp.h>
 
-#define kEmuWindowDidClose @"emuWindowDidClose"
+#define kEmuWindowDidClose kEmuWindowDidCloseNotification
 
 typedef NS_ENUM(char, EmuThreadPauseStatus) {
 	PauseStateIsNotPaused = 0,
@@ -18,6 +17,9 @@ typedef NS_ENUM(char, EmuThreadPauseStatus) {
 };
 
 NS_ASSUME_NONNULL_BEGIN
+
+/// "emuWindowDidClose"
+extern NSString *const kEmuWindowDidCloseNotification;
 
 @interface EmuThread : NSObject
 
@@ -35,18 +37,20 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)resetNow;
 + (void)reset;
 
-+ (BOOL)isPaused;
-+ (EmuThreadPauseStatus)pausedState;
-+ (BOOL)active;
-+ (BOOL)isRunBios;
-
-+ (void)freezeAt:(NSString *)path which:(int)num;
-+ (BOOL)defrostAt:(NSString *)path;
-
+#if __has_feature(objc_class_property)
 @property (class, readonly, getter=isPaused) BOOL paused;
 @property (class, readonly) EmuThreadPauseStatus pausedState;
 @property (class, readonly) BOOL active;
 @property (class, readonly, getter=isRunBios) BOOL runBios;
+#else
++ (BOOL)isPaused;
++ (EmuThreadPauseStatus)pausedState;
++ (BOOL)active;
++ (BOOL)isRunBios;
+#endif
+
++ (void)freezeAt:(NSString *)path which:(int)num;
++ (BOOL)defrostAt:(NSString *)path;
 
 @end
 

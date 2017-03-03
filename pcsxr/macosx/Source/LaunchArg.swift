@@ -27,7 +27,11 @@ final class LaunchArg: NSObject {
 		super.init()
 	}
 	
-	func addToDictionary(_ toAdd: NSMutableDictionary) {
+	@objc(addToDictionary:) func add(to toAdd: NSMutableDictionary) {
+		toAdd[argument] = self;
+	}
+	
+	func add(to toAdd: inout [String: LaunchArg]) {
 		toAdd[argument] = self;
 	}
 	
