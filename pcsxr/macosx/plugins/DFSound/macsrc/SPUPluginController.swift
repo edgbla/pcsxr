@@ -44,17 +44,22 @@ class SPUPluginController: NSWindowController {
 			NSLocalizedString("(Loudest)", bundle: spuBundle, comment: "(Loudest)")]
 	}
 	
-	func loadValues() {
+	@objc func loadValues() {
 		let defaults = UserDefaults.standard
 		ReadConfig()
+		
+		// Verify good preferences
+		if defaults.dictionary(forKey: PrefsKey) == nil {
+			defaults.removeObject(forKey: PrefsKey)
+		}
 		
 		/* load from preferences */
 		keyValues = defaults.dictionary(forKey: PrefsKey)!
 		
-		hiCompBox.integerValue = (keyValues[kHighCompMode] as! Bool) ? NSOnState : NSOffState
-		irqWaitBox.integerValue = (keyValues[kSPUIRQWait] as! Bool) ? NSOnState : NSOffState
-		monoSoundBox.integerValue = (keyValues[kMonoSoundOut] as! Bool) ? NSOnState : NSOffState
-		xaSpeedBox.integerValue = (keyValues[kXAPitch] as! Bool) ? NSOnState : NSOffState
+		hiCompBox.state = (keyValues[kHighCompMode] as! Bool) ? .on : .off
+		irqWaitBox.state = (keyValues[kSPUIRQWait] as! Bool) ? .on : .off
+		monoSoundBox.state = (keyValues[kMonoSoundOut] as! Bool) ? .on : .off
+		xaSpeedBox.state = (keyValues[kXAPitch] as! Bool) ? .on : .off
 		
 		interpolValue.integerValue = (keyValues[kInterpolQual] as! Int)
 		reverbValue.integerValue = (keyValues[kReverbQual] as! Int)
@@ -66,10 +71,10 @@ class SPUPluginController: NSWindowController {
 		
 		var writeDic = self.keyValues
 		
-		writeDic[kHighCompMode] = hiCompBox.integerValue == NSOnState ? true : false
-		writeDic[kSPUIRQWait] = irqWaitBox.integerValue == NSOnState ? true : false
-		writeDic[kMonoSoundOut] = monoSoundBox.integerValue == NSOnState ? true : false
-		writeDic[kXAPitch] = xaSpeedBox.integerValue == NSOnState ? true : false
+		writeDic[kHighCompMode] = hiCompBox.state == .on ? true : false
+		writeDic[kSPUIRQWait] = irqWaitBox.state == .on ? true : false
+		writeDic[kMonoSoundOut] = monoSoundBox.state == .on ? true : false
+		writeDic[kXAPitch] = xaSpeedBox.state == .on ? true : false
 
 		writeDic[kInterpolQual] = interpolValue.integerValue
 		writeDic[kReverbQual] = reverbValue.integerValue
