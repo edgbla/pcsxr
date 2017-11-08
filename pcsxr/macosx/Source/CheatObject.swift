@@ -14,9 +14,9 @@ func ==(rhs: CheatObject, lhs: CheatObject) -> Bool {
 }
 
 class CheatObject: NSObject, Sequence {
-	var cheatName: String
-	var values: [CheatValue]
-	var enabled: Bool
+	@objc var cheatName: String
+	@objc var values: [CheatValue]
+	@objc var enabled: Bool
 	
 	init(cheat: Cheat) {
 		cheatName = String(validatingUTF8: cheat.Descr)!
@@ -30,15 +30,15 @@ class CheatObject: NSObject, Sequence {
 		super.init()
 	}
 	
-	func addValuesObject(_ aVal: CheatValue) {
+	@objc func addValuesObject(_ aVal: CheatValue) {
 		values.append(aVal)
 	}
 	
-	func addValueObject(_ aVal: CheatValue) {
+	@objc func addValueObject(_ aVal: CheatValue) {
 		addValuesObject(aVal)
 	}
 	
-	var countOfValues: Int {
+	@objc var countOfValues: Int {
 		return values.count
 	}
 	
@@ -55,7 +55,7 @@ class CheatObject: NSObject, Sequence {
 		return values.makeIterator()
 	}
 	
-	init(name: String, enabled: Bool = false) {
+	@objc init(name: String, enabled: Bool = false) {
 		cheatName = name
 		self.enabled = enabled
 		values = [CheatValue()]

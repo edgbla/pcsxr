@@ -13,8 +13,8 @@ let kTempCheatCodesName = "cheatValues"
 let kCheatsName = "cheats"
 
 final class CheatController: NSWindowController, NSWindowDelegate {
-	var cheats: [CheatObject]
-	var cheatValues = [CheatValue]()
+	@objc var cheats: [CheatObject]
+	@objc var cheatValues = [CheatValue]()
 	@IBOutlet weak var cheatView: NSTableView!
 	@IBOutlet weak var editCheatWindow: NSWindow!
 	@IBOutlet weak var editCheatView: NSTableView!
@@ -34,16 +34,16 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 	}
 	
 	class func newController() -> CheatController {
-		let toRet = CheatController(windowNibName: "CheatWindow")
+		let toRet = CheatController(windowNibName: NSNib.Name(rawValue: "CheatWindow"))
 		
 		return toRet
 	}
 	
-	override var windowNibName: String {
-		return "CheatWindow"
+	override var windowNibName: NSNib.Name? {
+		return NSNib.Name(rawValue: "CheatWindow")
 	}
 	
-	func refresh() {
+	@objc func refresh() {
 		cheatView.reloadData()
 		refreshCheatArray()
 	}
@@ -83,7 +83,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		do {
 			try tmpStr.write(to: tmpURL, atomically: false, encoding: String.Encoding.utf8)
 		} catch _ {
-			NSBeep()
+			NSSound.beep()
 			return
 		}
 		LoadCheats((tmpURL as NSURL).fileSystemRepresentation)
@@ -98,7 +98,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		openDlg.allowsMultipleSelection = false
 		openDlg.allowedFileTypes = PcsxrCheatHandler.supportedUTIs
 		openDlg.beginSheetModal(for: window!, completionHandler: { (retVal) -> Void in
-			if retVal == NSFileHandlingPanelOKButton {
+			if retVal.rawValue == NSFileHandlingPanelOKButton {
 				let file = openDlg.url!
 				LoadCheats((file as NSURL).fileSystemRepresentation)
 				self.refresh()
@@ -113,7 +113,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		saveDlg.canCreateDirectories = true
 		saveDlg.prompt = NSLocalizedString("Save Cheats", comment: "")
 		saveDlg.beginSheetModal(for: window!, completionHandler: { (retVal) -> Void in
-			if retVal == NSFileHandlingPanelOKButton {
+			if retVal.rawValue == NSFileHandlingPanelOKButton {
 				let url = saveDlg.url!
 				let saveString: NSString = {
 					var toRet = ""
@@ -127,7 +127,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 					//let saveString = (self.cheats as NSArray).componentsJoinedByString("\n") as NSString
 					try saveString.write(to: url, atomically: true, encoding: String.Encoding.utf8.rawValue)
 				} catch _ {
-					NSBeep()
+					NSSound.beep()
 				}
 			}
 		})
@@ -138,7 +138,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 	}
 	
 	@IBAction func closeCheatEdit(_ sender: NSButton) {
-		window!.endSheet(editCheatWindow, returnCode: sender.tag == 1 ? NSModalResponseCancel : NSModalResponseOK)
+		window!.endSheet(editCheatWindow, returnCode: sender.tag == 1 ? NSApplication.ModalResponse.cancel : NSApplication.ModalResponse.OK)
 	}
 	
 	@IBAction func changeCheat(_ sender: AnyObject?) {
@@ -147,7 +147,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 	
 	@IBAction func removeCheatValue(_ sender: AnyObject?) {
 		if editCheatView.selectedRow < 0 {
-			NSBeep()
+			NSSound.beep()
 			return
 		}
 		
@@ -167,7 +167,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 	
 	@IBAction func editCheat(_ sender: AnyObject?) {
 		if cheatView.selectedRow < 0 {
-			NSBeep();
+			NSSound.beep()
 			return;
 		}
 		let tmpArray = cheats[cheatView.selectedRow].values
@@ -183,7 +183,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		cheatValues = newCheats
 		editCheatView.reloadData()
 		window!.beginSheet(editCheatWindow, completionHandler: { (returnCode) -> Void in
-			if returnCode == NSModalResponseOK {
+			if returnCode == NSApplication.ModalResponse.OK {
 				let tmpCheat = self.cheats[self.cheatView.selectedRow]
 				if tmpCheat.values != self.cheatValues {
 					tmpCheat.values = self.cheatValues
@@ -208,8 +208,8 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 		setDocumentEdited(false)
 	}
 	
-	func windowShouldClose(_ sender: Any) -> Bool {
-		if let windSender = sender as? NSWindow, (!windSender.isDocumentEdited || windSender != window) {
+	func windowShouldClose(_ sender: NSWindow) -> Bool {
+		if (!sender.isDocumentEdited || sender != window) {
 			return true
 		} else {
 			let alert = NSAlert()
@@ -221,14 +221,14 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 			
 			alert.beginSheetModal(for: window!, completionHandler: { (response) -> Void in
 				switch response {
-				case NSAlertFirstButtonReturn:
+				case NSApplication.ModalResponse.alertFirstButtonReturn:
 					self.reloadCheats()
 					self.close()
 					
-				case NSAlertThirdButtonReturn:
+				case NSApplication.ModalResponse.alertThirdButtonReturn:
 					break
 					
-				case NSAlertSecondButtonReturn:
+				case NSApplication.ModalResponse.alertSecondButtonReturn:
 					self.refreshCheatArray()
 					self.close()
 					
@@ -242,7 +242,7 @@ final class CheatController: NSWindowController, NSWindowDelegate {
 	
 	@IBAction func removeCheats(_ sender: AnyObject?) {
 		if cheatView.selectedRow < 0 {
-			NSBeep()
+			NSSound.beep()
 			return
 		}
 		

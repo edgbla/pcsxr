@@ -61,7 +61,7 @@ final class PluginList: NSObject {
 		sPluginList = self
 	}
 
-	func refreshPlugins() {
+	@objc func refreshPlugins() {
 		let fm = FileManager.default
 		
 		// verify that the ones that are in list still works
@@ -108,13 +108,13 @@ final class PluginList: NSObject {
 		}
 	}
 
-	func pluginsForType(_ typeMask: Int32) -> [PcsxrPlugin] {
+	@objc func pluginsForType(_ typeMask: Int32) -> [PcsxrPlugin] {
 		return pluginList.filter({ (plug) -> Bool in
 			return (plug.type & typeMask) == typeMask
 		})
 	}
 	
-	func hasPluginAtPath(_ path: String) -> Bool {
+	@objc func hasPluginAtPath(_ path: String) -> Bool {
 		for plugin in pluginList {
 			if plugin.path == path {
 				return true
@@ -125,7 +125,7 @@ final class PluginList: NSObject {
 	}
 	
 	/// returns true if all the required plugins are available
-	var configured: Bool {
+	@objc var configured: Bool {
 		return !missingPlugins
 	}
 	
@@ -241,7 +241,7 @@ final class PluginList: NSObject {
 		return plugin != nil;
 	}
 	
-	func disableNetPlug() {
+	@objc func disableNetPlug() {
 		var dst = PcsxrPlugin.configEntries(forType: PSE_LT_NET)
 		while dst.pointee != nil {
 			strcpy(dst.pointee, "Disabled");
@@ -249,7 +249,7 @@ final class PluginList: NSObject {
 		}
 	}
 	
-	func enableNetPlug() {
+	@objc func enableNetPlug() {
 		if let netPlug = activePlugin(for: PSE_LT_NET) {
 			let str = (netPlug.path as NSString).fileSystemRepresentation
 			var dst = PcsxrPlugin.configEntries(forType: PSE_LT_NET)

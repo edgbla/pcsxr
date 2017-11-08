@@ -28,7 +28,7 @@ private func imagesFromMcd(_ theBlock: UnsafePointer<McdBlock>) -> [NSImage] {
 	let unwrapped = theBlock.pointee
 	let iconArray: [Int16] = try! arrayFromObject(reflecting: unwrapped.Icon)
 	for i in 0..<unwrapped.IconCount {
-		if let imageRep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 16, pixelsHigh: 16, bitsPerSample: 8, samplesPerPixel: 3, hasAlpha: false, isPlanar: false, colorSpaceName: NSCalibratedRGBColorSpace, bytesPerRow: 16 * 3, bitsPerPixel: 24) {
+		if let imageRep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 16, pixelsHigh: 16, bitsPerSample: 8, samplesPerPixel: 3, hasAlpha: false, isPlanar: false, colorSpaceName: NSColorSpaceName.calibratedRGB, bytesPerRow: 16 * 3, bitsPerPixel: 24) {
 			imageRep.bitmapData?.withMemoryRebound(to: PSXRGBColor.self, capacity: 256, { (cocoaImageData) -> Void in
 				for v in 0..<256 {
 					//let x = v % 16
@@ -123,9 +123,9 @@ func MemFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
 final class PcsxrMemoryObject: NSObject {
 	private static var __once: () = {
 			func SetupAttrStr(_ mutStr: NSMutableAttributedString, txtclr: NSColor) {
-				let wholeStrRange = NSMakeRange(0, mutStr.string.utf16.count)
-				let ourAttrs: [String: Any] = [NSFontAttributeName : NSFont.systemFont(ofSize: NSFont.systemFontSize(for: .small)),
-					NSForegroundColorAttributeName: txtclr]
+				let wholeStrRange = NSMakeRange(0, mutStr.length)
+				let ourAttrs: [NSAttributedStringKey: Any] = [.font : NSFont.systemFont(ofSize: NSFont.systemFontSize(for: .small)),
+					.foregroundColor: txtclr]
 				mutStr.addAttributes(ourAttrs, range: wholeStrRange)
 				mutStr.setAlignment(.center, range: wholeStrRange)
 			}
@@ -160,19 +160,19 @@ final class PcsxrMemoryObject: NSObject {
 			SetupAttrStr(tmpStr, txtclr: NSColor.red)
 			attribMemLabelDeleted = NSAttributedString(attributedString: tmpStr)
 		}()
-	let title: String
-	let name: String
-	let identifier: String
+	@objc let title: String
+	@objc let name: String
+	@objc let identifier: String
 	let imageArray: [NSImage]
-	let flag: PCSXRMemFlag
-	let indexes: IndexSet
-	let hasImages: Bool
+	@objc let flag: PCSXRMemFlag
+	@objc let indexes: IndexSet
+	@objc let hasImages: Bool
 	
-	var blockSize: Int {
+	@objc var blockSize: Int {
 		return indexes.count
 	}
 	
-	init(mcdBlock infoBlock: UnsafePointer<McdBlock>, blockIndexes: IndexSet) {
+	@objc init(mcdBlock infoBlock: UnsafePointer<McdBlock>, blockIndexes: IndexSet) {
 		self.indexes = blockIndexes
 		let unwrapped = infoBlock.pointee
 		flag = MemFlagsFromBlockFlags(unwrapped.Flags)
@@ -205,19 +205,19 @@ final class PcsxrMemoryObject: NSObject {
 		super.init()
 	}
 	
-	convenience init(mcdBlock infoBlock: UnsafePointer<McdBlock>, startingIndex startIdx: Int, size memSize: Int) {
-		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: NSRange(location: startIdx, length: memSize).toRange()!))
+	@objc convenience init(mcdBlock infoBlock: UnsafePointer<McdBlock>, startingIndex startIdx: Int, size memSize: Int) {
+		self.init(mcdBlock: infoBlock, blockIndexes: IndexSet(integersIn: Range(NSRange(location: startIdx, length: memSize))!))
 	}
 	
-	var iconCount: Int {
+	@objc var iconCount: Int {
 		return imageArray.count
 	}
 
-	class func memFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
+	@objc class func memFlagsFromBlockFlags(_ blockFlags: UInt8) -> PCSXRMemFlag {
 		return MemFlagsFromBlockFlags(blockFlags)
 	}
 	
-	private(set) lazy var image: NSImage = {
+	@objc private(set) lazy var image: NSImage = {
 		if (self.hasImages == false) {
 			let tmpBlank = blankImage()
 			tmpBlank.size = NSSize(width: 32, height: 32)
@@ -239,7 +239,7 @@ final class PcsxrMemoryObject: NSObject {
 		return _memImage
 		}()
 	
-	var attributedFlagName: NSAttributedString {
+	@objc var attributedFlagName: NSAttributedString {
 		_ = PcsxrMemoryObject.__once
 		
 		switch (flag) {
@@ -260,7 +260,7 @@ final class PcsxrMemoryObject: NSObject {
 		}
 	}
 	
-	var firstImage: NSImage {
+	@objc var firstImage: NSImage {
 		if hasImages == false {
 			return blankImage()
 		}
@@ -271,7 +271,7 @@ final class PcsxrMemoryObject: NSObject {
 		return memoryLabelFromFlag(flagNameIdx)
 	}
 	
-	var flagName: String {
+	@objc var flagName: String {
 		return memoryLabelFromFlag(flag)
 	}
 
@@ -279,7 +279,7 @@ final class PcsxrMemoryObject: NSObject {
 		return "\(title): Name: \(name) ID: \(identifier), type: \(flagName), indexes: \(indexes)"
 	}
 	
-	var showCount: Bool {
+	@objc var showCount: Bool {
 		if flag == .free {
 			//Always show the size of the free blocks
 			return true;

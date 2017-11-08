@@ -15,11 +15,11 @@ import Cocoa
 }
 
 final class LaunchArg: NSObject {
-	let launchOrder: UInt32
-	let theBlock: ()->()
-	let argument: String
+	@objc let launchOrder: UInt32
+	@objc let theBlock: ()->()
+	@objc let argument: String
 
-	init(launchOrder order: UInt32, argument arg: String, block: @escaping ()->()) {
+	@objc init(launchOrder order: UInt32, argument arg: String, block: @escaping ()->()) {
 		launchOrder = order
 		argument = arg
 		theBlock = block

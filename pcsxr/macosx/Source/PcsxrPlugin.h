@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (char *__nullable *__nonnull)configEntriesForType:(int)type;
 @property (class, readonly, copy) NSArray<NSString*> *pluginsPaths;
 
+- (instancetype)init UNAVAILABLE_ATTRIBUTE;
 - (nullable instancetype)initWithPath:(NSString *)aPath NS_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithURL:(NSURL *)aPath;
 

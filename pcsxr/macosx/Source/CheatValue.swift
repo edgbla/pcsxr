@@ -13,8 +13,8 @@ func ==(rhs: CheatValue, lhs: CheatValue) -> Bool {
 }
 
 class CheatValue: NSObject, NSCopying {
-	var cheatAddress: UInt32
-	var cheatValue: UInt16
+	@objc var cheatAddress: UInt32
+	@objc var cheatValue: UInt16
 	
 	init(address add: UInt32, value val: UInt16) {
 		cheatAddress = add

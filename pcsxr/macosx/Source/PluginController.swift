@@ -52,7 +52,7 @@ final class PluginController: NSObject {
 	}
 
 	/// must be called before anything else
-	func setPluginsTo(_ list: [PcsxrPlugin], withType type: Int32) {
+	@objc func setPluginsTo(_ list: [PcsxrPlugin], withType type: Int32) {
 		// remember the list
 		pluginType = type
 		plugins = list.sorted(by: { (lhs, rhs) -> Bool in

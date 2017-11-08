@@ -18,7 +18,7 @@ final class RecentItemsMenu: NSMenu {
 		autoenablesItems = true
 		
 		// Populate the menu
-		let recentDocuments = NSDocumentController.shared().recentDocumentURLs
+		let recentDocuments = NSDocumentController.shared.recentDocumentURLs
 		for (i, url) in recentDocuments.enumerated() {
 			let tempItem = newMenuItem(url)
 			addMenuItem(tempItem, index: i)
@@ -29,7 +29,7 @@ final class RecentItemsMenu: NSMenu {
 		insertItem(item, at: index)
 		
 		// Prevent menu from overflowing; the -2 accounts for the "Clear..." and the separator items
-		let maxNumItems = NSDocumentController.shared().maximumRecentDocumentCount
+		let maxNumItems = NSDocumentController.shared.maximumRecentDocumentCount
 		if numberOfItems - 2 > maxNumItems {
 			removeItem(at: maxNumItems)
 		}
@@ -38,7 +38,7 @@ final class RecentItemsMenu: NSMenu {
 	private func newMenuItem(_ documentURL: URL) -> NSMenuItem {
 		let documentPath = documentURL.path
 		let lastName = FileManager.default.displayName(atPath: documentPath)
-		let fileImage = NSWorkspace.shared().icon(forFile: documentPath)
+		let fileImage = NSWorkspace.shared.icon(forFile: documentPath)
 		fileImage.size = NSSize(width: 16, height: 16)
 		
 		let newItem = NSMenuItem(title: lastName, action: #selector(RecentItemsMenu.openRecentItem(_:)), keyEquivalent: "")
@@ -49,8 +49,8 @@ final class RecentItemsMenu: NSMenu {
 		return newItem
 	}
 	
-	func addRecentItem(_ documentURL: URL) {
-		NSDocumentController.shared().noteNewRecentDocumentURL(documentURL)
+	@objc func addRecentItem(_ documentURL: URL) {
+		NSDocumentController.shared.noteNewRecentDocumentURL(documentURL)
 		
 		if let item = findMenuItem(by: documentURL) {
 			removeItem(item)
@@ -79,7 +79,7 @@ final class RecentItemsMenu: NSMenu {
 	
 	@IBAction func clearRecentDocuments(_ sender: AnyObject?) {
 		removeDocumentItems()
-		NSDocumentController.shared().clearRecentDocuments(sender)
+		NSDocumentController.shared.clearRecentDocuments(sender)
 	}
 	
 	// Document items are menu items with tag 0
