@@ -22,19 +22,19 @@
 
 /***************************************************************************/
 
-extern void fifoOpen();
-extern void fifoClose();
+extern void fifoOpen(void);
+extern void fifoClose(void);
 
-extern void fifoReset();
-extern void fifoResetErr();
+extern void fifoReset(void);
+extern void fifoResetErr(void);
 
 /***************************************************************************/
 
-extern s32 fifoEmployment();
-extern s32 fifoEmpty();
-extern s32 fifoFull();
+extern s32 fifoEmployment(void);
+extern s32 fifoEmpty(void);
+extern s32 fifoFull(void);
 
-extern s32 fifoOverrun();
+extern s32 fifoOverrun(void);
 
 /***************************************************************************/
 

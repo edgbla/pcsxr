@@ -237,7 +237,7 @@ static u32 step_over_addr = 0;
 static int mapping_e = 0, mapping_r8 = 0, mapping_r16 = 0, mapping_r32 = 0, mapping_w8 = 0, mapping_w16 = 0, mapping_w32 = 0;
 static int breakmp_e = 0, breakmp_r8 = 0, breakmp_r16 = 0, breakmp_r32 = 0, breakmp_w8 = 0, breakmp_w16 = 0, breakmp_w32 = 0;
 
-static void ProcessCommands();
+static void ProcessCommands(void);
 
 static u8 *MemoryMap = NULL;
 

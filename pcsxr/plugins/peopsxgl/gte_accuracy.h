@@ -20,7 +20,7 @@
 #ifndef _GTE_ACCURACY_H_
 #define _GTE_ACCURACY_H_
 
-extern void resetGteVertices();
+extern void resetGteVertices(void);
 extern int getGteVertex(short sx, short sy, float *fx, float *fy);
 
 #endif // _GTE_ACCURACY_H_

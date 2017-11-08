@@ -28,8 +28,8 @@ extern "C" {
 #include "../psxmem.h"
 
 #define CP2_FUNC(f) \
-void gte##f(); \
-static void rec##f() { \
+void gte##f(void); \
+static void rec##f(void) { \
 	iFlushRegs(); \
 	MOV32ItoM((uptr)&psxRegs.code, (u32)psxRegs.code); \
 	CALLFunc((uptr)gte##f); \

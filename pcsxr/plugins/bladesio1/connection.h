@@ -22,8 +22,8 @@
 
 /***************************************************************************/
 
-extern int connectionOpen();
-extern void connectionClose();
+extern int connectionOpen(void);
+extern void connectionClose(void);
 
 /***************************************************************************/
 

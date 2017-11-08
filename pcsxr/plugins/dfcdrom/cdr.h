@@ -206,15 +206,15 @@ typedef struct {
 	int ret;
 } CacheData;
 
-long ReadNormal();
-long ReadThreaded();
-unsigned char* GetBNormal();
-unsigned char* GetBThreaded();
+long ReadNormal(void);
+long ReadThreaded(void);
+unsigned char* GetBNormal(void);
+unsigned char* GetBThreaded(void);
 
 long CDRstop(void);
 
-void LoadConf();
-void SaveConf();
+void LoadConf(void);
+void SaveConf(void);
 
 #ifdef DEBUG
 #define PRINTF printf
@@ -227,15 +227,15 @@ void lba_to_msf(unsigned int s, unsigned char *msf);
 void DecodeRawSubData(unsigned char *subbuffer);
 unsigned short calcCrc(unsigned char *d, int len);
 
-int OpenCdHandle();
-void CloseCdHandle();
-int IsCdHandleOpen();
+int OpenCdHandle(const char *dev);
+void CloseCdHandle(void);
+int IsCdHandleOpen(void);
 long GetTN(unsigned char *buffer);
 long GetTD(unsigned char track, unsigned char *buffer);
 long GetTE(unsigned char track, unsigned char *m, unsigned char *s, unsigned char *f);
 long ReadSector(crdata *cr);
 long PlayCDDA(unsigned char *sector);
-long StopCDDA();
+long StopCDDA(void);
 long GetStatus(int playing, struct CdrStat *stat);
 unsigned char *ReadSub(const unsigned char *time);
 

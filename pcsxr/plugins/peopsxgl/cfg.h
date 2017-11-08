@@ -27,6 +27,6 @@ BOOL CALLBACK AboutDlgProc(HWND hW, UINT uMsg, WPARAM wParam, LPARAM lParam);
 #else
 
 void ReadConfig(void);
-void ReadConfigFile();
+void ReadConfigFile(void);
 
 #endif

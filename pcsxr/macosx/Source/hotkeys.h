@@ -9,7 +9,7 @@
 #ifndef Pcsxr_hotkeys_h
 #define Pcsxr_hotkeys_h
 
-void attachHotkeys();
-void detachHotkeys();
+void attachHotkeys(void);
+void detachHotkeys(void);
 
 #endif

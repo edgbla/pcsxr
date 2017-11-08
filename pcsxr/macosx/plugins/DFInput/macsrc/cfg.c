@@ -21,8 +21,8 @@
 
 GLOBALDATA g;
 
-long DoConfiguration();
-void DoAbout();
+long DoConfiguration(void);
+void DoAbout(void);
 
 long PADconfigure(void) {
 	if (SDL_WasInit(SDL_INIT_JOYSTICK))

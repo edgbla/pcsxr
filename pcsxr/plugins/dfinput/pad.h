@@ -234,22 +234,22 @@ enum {
 };
 
 // cfg.c functions...
-void LoadPADConfig();
-void SavePADConfig();
+void LoadPADConfig(void);
+void SavePADConfig(void);
 
 // sdljoy.c functions...
-void InitSDLJoy();
-void DestroySDLJoy();
-void CheckJoy();
+void InitSDLJoy(void);
+void DestroySDLJoy(void);
+void CheckJoy(void);
 
 // xkb.c functions...
-void InitKeyboard();
-void DestroyKeyboard();
-void CheckKeyboard();
+void InitKeyboard(void);
+void DestroyKeyboard(void);
+void CheckKeyboard(void);
 
 // analog.c functions...
-void InitAnalog();
-void CheckAnalog();
+void InitAnalog(void);
+void CheckAnalog(void);
 int AnalogKeyPressed(uint16_t Key);
 int AnalogKeyReleased(uint16_t Key);
 

@@ -29,6 +29,6 @@ BOOL bCheckFF9G4(unsigned char * baseAddr);
 void SetScanTrans(void);
 void SetScanTexTrans(void);
 void DrawMultiBlur(void);
-void CheckWriteUpdate();
+void CheckWriteUpdate(void);
 
 #endif // _PRIMDRAW_H_

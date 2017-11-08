@@ -10,7 +10,7 @@
 #define __private_extern __attribute__((visibility("hidden")))
 #endif
 
-__private_extern void DoAbout();
-__private_extern long DoConfiguration();
+__private_extern void DoAbout(void);
+__private_extern long DoConfiguration(void);
 
 #endif

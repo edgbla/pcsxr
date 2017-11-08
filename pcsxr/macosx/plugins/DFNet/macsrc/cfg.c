@@ -11,9 +11,9 @@
 
 #include "dfnet.h"
 
-void AboutDlgProc();
-void ConfDlgProc();
-void ReadConfig();
+void AboutDlgProc(void);
+void ConfDlgProc(void);
+void ReadConfig(void);
 
 void NETabout() {
 	AboutDlgProc();

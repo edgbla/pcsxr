@@ -525,7 +525,7 @@ otherblock();\
 		
 		__block short memcardHandled = 0;
 		__block BOOL hasParsedAnArgument = NO;
-		__block NSString *(^FileTestBlock)() = NULL;
+		__block NSString *(^FileTestBlock)(void) = NULL;
 		__block NSMutableDictionary *argDict = [[NSMutableDictionary alloc] initWithCapacity:[progArgs count]];
 		
 		

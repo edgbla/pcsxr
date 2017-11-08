@@ -264,16 +264,19 @@
 
 - (long)runAs:(int)aType
 {
-	long (*init)();
+	long (*init)(void);
 	long (*initArg)(long arg);
 	long res = PSE_ERR_FATAL;
+	void *initRaw;
 	
 	if ((active & aType) == aType) {
 		return 0;
 	}
 	
-	init = initArg = SysLoadSym(pluginRef, [PluginSymbolName(aType, @"init")
+	initRaw = SysLoadSym(pluginRef, [PluginSymbolName(aType, @"init")
 											cStringUsingEncoding:NSASCIIStringEncoding]);
+	init = initRaw;
+	initArg = initRaw;
 	if (SysLibError() == NULL) {
 		if (aType != PSE_LT_PAD) {
 			res = init();

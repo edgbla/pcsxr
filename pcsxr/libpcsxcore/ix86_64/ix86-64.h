@@ -1011,8 +1011,8 @@ void RET( void );
 // ret (2-byte code used for misprediction)
 void RET2( void );
 
-void CBW();
-void CWDE();
+void CBW(void);
+void CWDE(void);
 // cwd 
 void CWD( void );
 // cdq 
@@ -1020,8 +1020,8 @@ void CDQ( void );
 // cdqe
 void CDQE( void );
 
-void LAHF();
-void SAHF();
+void LAHF(void);
+void SAHF(void);
 
 void BT32ItoR( x86IntRegType to, x86IntRegType from );
 void BSRRtoR(x86IntRegType to, x86IntRegType from);
@@ -1052,9 +1052,9 @@ void FLD32( uptr from );
 // fld st(i)
 void FLD(int st);
 // fld1 (push +1.0f on the stack)
-void FLD1();
+void FLD1(void);
 // fld1 (push log_2 e on the stack)
-void FLDL2E();
+void FLDL2E(void);
 // fst m32 from fpu reg stack 
 void FST32( uptr to );
 // fstp m32 from fpu reg stack 
@@ -1066,13 +1066,13 @@ void FSTP(int st);
 void FLDCW( uptr from );
 // fstcw fpu control word to m16 
 void FNSTCW( uptr to );
-void FXAM();
-void FDECSTP();
+void FXAM(void);
+void FDECSTP(void);
 // frndint
-void FRNDINT();
+void FRNDINT(void);
 void FXCH(int st);
-void F2XM1();
-void FSCALE();
+void F2XM1(void);
+void FSCALE(void);
 
 // fadd ST(src) to fpu reg stack ST(0) 
 void FADD32Rto0( x86IntRegType src );

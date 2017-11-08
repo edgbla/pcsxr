@@ -12,7 +12,9 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
+#ifndef __APPLE__
 extern int errno;
+#endif
 
 #include "dfnet.h"
 

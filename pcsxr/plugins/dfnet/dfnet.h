@@ -60,7 +60,7 @@ struct timeval tm;
 
 #define CALLBACK
 
-long timeGetTime();
+long timeGetTime(void);
 
 #include "psemu_plugin_defs.h"
 
@@ -72,8 +72,8 @@ typedef struct {
 
 Config conf;
 
-void LoadConf();
-void SaveConf();
+void LoadConf(void);
+void SaveConf(void);
 
 int sock;
 char *PadSendData;
@@ -89,15 +89,15 @@ volatile int WaitCancel;
 fd_set rset;
 fd_set wset;
 
-long sockInit();
-long sockShutdown();
-long sockOpen();
-void sockCreateWaitDlg();
-void sockDlgUpdate();
-void sockDestroyWaitDlg();
-int sockPing();
+long sockInit(void);
+long sockShutdown(void);
+long sockOpen(void);
+void sockCreateWaitDlg(void);
+void sockDlgUpdate(void);
+void sockDestroyWaitDlg(void);
+int sockPing(void);
 
-int ShowPauseDlg();
+int ShowPauseDlg(void);
 void SysMessage(const char *fmt, ...);
 
 size_t SEND(const void *pData, int Size, int Mode);

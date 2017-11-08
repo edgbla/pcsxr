@@ -21,9 +21,9 @@
 
 #include "cdr.h"
 
-void AboutDlgProc();
-void ConfDlgProc();
-void ReadConfig();
+void AboutDlgProc(void);
+void ConfDlgProc(void);
+void ReadConfig(void);
 
 char CdromDev[256];
 long ReadMode;

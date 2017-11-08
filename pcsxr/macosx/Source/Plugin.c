@@ -26,7 +26,7 @@
 #include "plugins.h"
 #include "spu.h"
 
-void OnFile_Exit();
+void OnFile_Exit(void);
 
 unsigned long gpuDisp;
 

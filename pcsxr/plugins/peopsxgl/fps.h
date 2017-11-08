@@ -26,5 +26,5 @@ void ReInitFrameCap(void);
 void SetAutoFrameCap(void);
 
 #ifndef _WINDOWS
-unsigned long timeGetTime();
+unsigned long timeGetTime(void);
 #endif

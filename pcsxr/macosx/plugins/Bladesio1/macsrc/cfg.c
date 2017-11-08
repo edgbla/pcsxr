@@ -24,9 +24,9 @@
 #include "typedefs.h"
 #include "sio1.h"
 
-void AboutDlgProc();
-void ConfDlgProc();
-void ReadConfig();
+void AboutDlgProc(void);
+void ConfDlgProc(void);
+void ReadConfig(void);
 
 Settings settings;
 

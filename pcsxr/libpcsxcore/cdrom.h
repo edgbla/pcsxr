@@ -113,16 +113,16 @@ typedef struct {
 
 extern cdrStruct cdr;
 
-void cdrReset();
+void cdrReset(void);
 void cdrAttenuate(s16 *buf, int samples, int stereo);
 
-void cdrInterrupt();
-void cdrReadInterrupt();
-void cdrDecodedBufferInterrupt();
-void cdrLidSeekInterrupt();
-void cdrPlayInterrupt();
-void cdrDmaInterrupt();
-void LidInterrupt();
+void cdrInterrupt(void);
+void cdrReadInterrupt(void);
+void cdrDecodedBufferInterrupt(void);
+void cdrLidSeekInterrupt(void);
+void cdrPlayInterrupt(void);
+void cdrDmaInterrupt(void);
+void LidInterrupt(void);
 unsigned char cdrRead0(void);
 unsigned char cdrRead1(void);
 unsigned char cdrRead2(void);

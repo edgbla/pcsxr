@@ -15,7 +15,9 @@
 #include <errno.h>
 #include <signal.h>
 #include <sys/wait.h>
+#ifndef __APPLE__
 extern int errno;
+#endif
 
 #include "dfnet.h"
 

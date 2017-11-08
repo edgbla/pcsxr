@@ -27,8 +27,8 @@
 #include "cfg-winapi.h"
 #elif defined _MACOSX
 #include <sys/stat.h>
-void AboutDlgProc();
-void ConfDlgProc();
+void AboutDlgProc(void);
+void ConfDlgProc(void);
 #else
 #include <unistd.h>
 #include <sys/stat.h>

@@ -21,8 +21,8 @@
 
 #define TEXTUREPAGESIZE 256 * 256
 
-void           InitializeTextureStore();
-void           CleanupTextureStore();
+void           InitializeTextureStore(void);
+void           CleanupTextureStore(void);
 GLuint         LoadTextureWnd(int pageid, int TextureMode, uint32_t GivenClutId);
 GLuint         LoadTextureMovie(void);
 void           InvalidateTextureArea(int imageX0, int imageY0, int imageX1, int imageY1);

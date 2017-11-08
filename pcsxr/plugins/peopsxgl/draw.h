@@ -33,8 +33,8 @@
 BOOL bSetupPixelFormat(HDC hDC);
 #endif
 
-int  GLinitialize();
-void GLcleanup();
+int  GLinitialize(void);
+void GLcleanup(void);
 BOOL offset2(void);
 BOOL offset3(void);
 BOOL offset4(void);

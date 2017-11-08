@@ -7,5 +7,5 @@ void DoBufferSwap(void);
 void SetVSync(GLint myValue);
 void BringContextForward(void);
 void ChangeWindowMode(void);
-void AboutDlgProc();
-void DlgProc();
+void AboutDlgProc(void);
+void DlgProc(void);

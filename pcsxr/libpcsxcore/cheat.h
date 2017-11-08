@@ -39,20 +39,20 @@ typedef struct {
 	int			Enabled;
 } Cheat;
 
-void ClearAllCheats();
+void ClearAllCheats(void);
 
 void LoadCheats(const char *filename);
 void SaveCheats(const char *filename);
 
-void ApplyCheats();
+void ApplyCheats(void);
 
 int AddCheat(const char *descr, char *code);
 void RemoveCheat(int index);
 int EditCheat(int index, const char *descr, char *code);
 
-void FreeCheatSearchResults();
-void FreeCheatSearchMem();
-void CheatSearchBackupMemory();
+void FreeCheatSearchResults(void);
+void FreeCheatSearchMem(void);
+void CheatSearchBackupMemory(void);
 
 void CheatSearchEqual8(u8 val);
 void CheatSearchEqual16(u16 val);
@@ -69,18 +69,18 @@ void CheatSearchIncreasedBy32(u32 val);
 void CheatSearchDecreasedBy8(u8 val);
 void CheatSearchDecreasedBy16(u16 val);
 void CheatSearchDecreasedBy32(u32 val);
-void CheatSearchIncreased8();
-void CheatSearchIncreased16();
-void CheatSearchIncreased32();
-void CheatSearchDecreased8();
-void CheatSearchDecreased16();
-void CheatSearchDecreased32();
-void CheatSearchDifferent8();
-void CheatSearchDifferent16();
-void CheatSearchDifferent32();
-void CheatSearchNoChange8();
-void CheatSearchNoChange16();
-void CheatSearchNoChange32();
+void CheatSearchIncreased8(void);
+void CheatSearchIncreased16(void);
+void CheatSearchIncreased32(void);
+void CheatSearchDecreased8(void);
+void CheatSearchDecreased16(void);
+void CheatSearchDecreased32(void);
+void CheatSearchDifferent8(void);
+void CheatSearchDifferent16(void);
+void CheatSearchDifferent32(void);
+void CheatSearchNoChange8(void);
+void CheatSearchNoChange16(void);
+void CheatSearchNoChange32(void);
 
 extern Cheat *Cheats;
 extern CheatCode *CheatCodes;

@@ -23,8 +23,8 @@
 extern "C" {
 #endif
 
-void BuildPPFCache();
-void FreePPFCache();
+void BuildPPFCache(void);
+void FreePPFCache(void);
 void CheckPPFCache(unsigned char *pB, unsigned char m, unsigned char s, unsigned char f);
 
 int LoadSBI(const char *filename);

@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-BOOL isShaderEnabled();
-NSURL *PSXFragmentShader();
-NSURL *PSXVertexShader();
-float PSXShaderQuality();
+BOOL isShaderEnabled(void);
+NSURL *PSXFragmentShader(void);
+NSURL *PSXVertexShader(void);
+float PSXShaderQuality(void);

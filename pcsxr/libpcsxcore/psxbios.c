@@ -2336,9 +2336,9 @@ void psxBios_dummy() {
 	pc0 = ra; 
 }
 
-void (*biosA0[256])();
-void (*biosB0[256])();
-void (*biosC0[256])();
+void (*biosA0[256])(void);
+void (*biosB0[256])(void);
+void (*biosC0[256])(void);
 
 #include "sjisfont.h"
 

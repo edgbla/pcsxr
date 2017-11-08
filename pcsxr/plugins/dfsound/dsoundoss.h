@@ -23,5 +23,5 @@ void SoundFeedStreamData(unsigned char* pSound,long lBytes);
 #ifdef _WINDOWS
 #define timeGetTime_spu timeGetTime
 #else
-unsigned long timeGetTime_spu();
+unsigned long timeGetTime_spu(void);
 #endif
