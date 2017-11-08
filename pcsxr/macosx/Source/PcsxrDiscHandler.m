@@ -11,7 +11,7 @@
 #include "psxcommon.h"
 #include "plugins.h"
 #include "cdrom.h"
-#import "Pcsxr-Swift.h"
+#import "PCSXR-Swift.h"
 #import "PcsxrController.h"
 
 @interface PcsxrDiscHandler ()
